@@ -6,10 +6,10 @@ namespace cr_mono
 {
     public class Game1 : Game
     {
-        //Texture2D character;
-
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        Sprite sprite;
 
         public Game1()
         {
@@ -32,7 +32,9 @@ namespace cr_mono
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            //character = Content.Load<Texture2D>("Player0");
+
+            Texture2D texture = Content.Load<Texture2D>("tileset");
+            sprite = new Sprite(texture, Vector2.Zero);
         }
 
         protected override void Update(GameTime gameTime)
@@ -41,6 +43,7 @@ namespace cr_mono
                 Exit();
 
             // TODO: Add your update logic here
+            sprite.Update();
 
             base.Update(gameTime);
         }
@@ -51,8 +54,7 @@ namespace cr_mono
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            //_spriteBatch.Draw(character, new Rectangle(100, 100, 70, 100),
-            //    new Rectangle(96, 45, 14, 19), Color.White);
+            _spriteBatch.Draw(sprite.texture, sprite.Rect, Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);
