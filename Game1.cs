@@ -6,16 +6,22 @@ namespace cr_mono
 {
     public class Game1 : Game
     {
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        const int WIDTH = 720;
+        const int HEIGHT = 480;
 
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        private RenderTarget2D renderTarget;
+
+        private SpriteFont font;
         Sprite sprite;
 
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferWidth = 720;
-            _graphics.PreferredBackBufferHeight = 480;
+            graphics = new GraphicsDeviceManager(this) {
+                PreferredBackBufferWidth = WIDTH,
+                PreferredBackBufferHeight = HEIGHT
+            };
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -29,9 +35,11 @@ namespace cr_mono
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+
+            font = Content.Load<SpriteFont>("fonts/main_font");
 
             Texture2D texture = Content.Load<Texture2D>("tileset");
             sprite = new Sprite(texture, Vector2.Zero);
@@ -53,9 +61,10 @@ namespace cr_mono
             GraphicsDevice.Clear(Color.DarkMagenta);
 
             // TODO: Add your drawing code here
-            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            _spriteBatch.Draw(sprite.texture, sprite.Rect, Color.White);
-            _spriteBatch.End();
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            spriteBatch.Draw(sprite.texture, sprite.Rect, Color.White);
+            spriteBatch.DrawString(font, "Game Text Example...", Vector2.Zero, Color.Black);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
