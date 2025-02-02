@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,10 +12,14 @@ namespace cr_mono
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        private RenderTarget2D renderTarget;
 
         private SpriteFont font;
-        Sprite sprite;
+        Texture2D texture;
+
+        private Dictionary<Vector2, int> tilemap;
+        private List<Rectangle> textureStore;
+
+
 
         public Game1()
         {
@@ -24,6 +29,18 @@ namespace cr_mono
             };
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+        }
+
+        private Dictionary<Vector2, int> LoadMap() {
+            Dictionary<Vector2, int> map = new();
+
+            for (int y = 0; y < 10; y++) {
+                for (int x = 0; x < 10; x++) {
+                    map[new Vector2(x, y)] = 1;
+                }
+            }
+
+            return map;
         }
 
         protected override void Initialize()
@@ -41,8 +58,9 @@ namespace cr_mono
 
             font = Content.Load<SpriteFont>("fonts/main_font");
 
-            Texture2D texture = Content.Load<Texture2D>("tileset");
-            sprite = new Sprite(texture, Vector2.Zero);
+            tilemap = LoadMap();
+            textureStore = new() { new Rectangle(0, 0, 32, 32) };
+            texture = Content.Load<Texture2D>("tileset");
         }
 
         protected override void Update(GameTime gameTime)
@@ -51,7 +69,6 @@ namespace cr_mono
                 Exit();
 
             // TODO: Add your update logic here
-            sprite.Update();
 
             base.Update(gameTime);
         }
@@ -62,7 +79,17 @@ namespace cr_mono
 
             // TODO: Add your drawing code here
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            spriteBatch.Draw(sprite.texture, sprite.Rect, Color.White);
+
+            foreach (var item in tilemap) {
+                Rectangle dst = new(
+                    (int)((item.Key.X * 0.5 * 32) + (item.Key.Y * -0.5 * 32) + (WIDTH/2 - 16)),
+                    (int)((item.Key.X * 0.25 * 32) + (item.Key.Y * 0.25 * 32)) + (HEIGHT/3),
+                    32, 32);
+                Rectangle src = textureStore[item.Value - 1];
+
+                spriteBatch.Draw(texture, dst, src, Color.White);
+            }
+
             spriteBatch.DrawString(font, "Game Text Example...", Vector2.Zero, Color.Black);
             spriteBatch.End();
 
