@@ -2,8 +2,8 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace cr_mono.Scenes
 {
@@ -14,8 +14,11 @@ namespace cr_mono.Scenes
         private Dictionary<Vector2, int> tilemap;
         private List<Rectangle> textureStore;
 
+        private Camera camera;
+
         internal override void LoadContent(ContentManager content)
         {
+            camera = new Camera();
             tilemap = LoadMap();
             textureStore = new() { new Rectangle(0, 0, 32, 32) };
             texture = content.Load<Texture2D>("tileset");
@@ -30,6 +33,7 @@ namespace cr_mono.Scenes
             {
                 Data.CurrentScene = Data.Scenes.Settings;
             }
+            camera.Update(gameTime);
         }
 
         internal override void draw(SpriteBatch spriteBatch)
@@ -38,8 +42,10 @@ namespace cr_mono.Scenes
             
             foreach (var item in tilemap) {
                 Rectangle dst = new(
-                    (int)((item.Key.X * 0.5 * 32) + (item.Key.Y * -0.5 * 32) + (Data.ScreenWidth/2 - 16)),
-                    (int)((item.Key.X * 0.25 * 32) + (item.Key.Y * 0.25 * 32)) + (Data.ScreenHeight/3),
+                    (int)((item.Key.X * 0.5 * 32) + (item.Key.Y * -0.5 * 32) + (Data.ScreenWidth/2 - 16) 
+                        + camera.Position.X),
+                    (int)((item.Key.X * 0.25 * 32) + (item.Key.Y * 0.25 * 32) + (Data.ScreenHeight/3)
+                        + camera.Position.Y),
                     32, 32);
                 Rectangle src = textureStore[item.Value - 1];
             
@@ -49,8 +55,9 @@ namespace cr_mono.Scenes
             spriteBatch.End();
         }
 
-        private Dictionary<Vector2, int> LoadMap() {
-            Dictionary<Vector2, int> map = new();
+        private static Dictionary<Vector2, int> LoadMap()
+        {
+            Dictionary<Vector2, int> map = [];
         
             for (int y = 0; y < 10; y++) {
                 for (int x = 0; x < 10; x++) {
