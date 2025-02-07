@@ -19,7 +19,7 @@ namespace cr_mono.Scenes
         internal override void LoadContent(ContentManager content)
         {
             camera = new Camera();
-            tilemap = LoadMap();
+            tilemap = MapGenerator.WiderMap();//LoadTestMap();
             textureStore = new() { new Rectangle(0, 0, 32, 32) };
             texture = content.Load<Texture2D>("tileset");
         }
@@ -53,19 +53,6 @@ namespace cr_mono.Scenes
             }
             
             spriteBatch.End();
-        }
-
-        private static Dictionary<Vector2, int> LoadMap()
-        {
-            Dictionary<Vector2, int> map = [];
-        
-            for (int y = 0; y < 10; y++) {
-                for (int x = 0; x < 10; x++) {
-                    map[new Vector2(x, y)] = 1;
-                }
-            }
-        
-            return map;
         }
     }
 }

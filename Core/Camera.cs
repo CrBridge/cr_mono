@@ -14,18 +14,18 @@ namespace cr_mono.Core
         public void Update(GameTime gameTime) {
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                Position.Y -= 24 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.Y -= 32 * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.A)) {
-                Position.X -= 24 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.X -= 32 * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                Position.Y += 24 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.Y += 32 * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                Position.X += 24 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.X += 32 * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
     }
