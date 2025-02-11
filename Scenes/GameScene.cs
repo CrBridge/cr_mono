@@ -15,11 +15,12 @@ namespace cr_mono.Scenes
         private List<Rectangle> textureStore;
 
         private Camera camera;
+        private Vector2 selectedTile;
 
         internal override void LoadContent(ContentManager content)
         {
             camera = new Camera();
-            tilemap = MapGenerator.WiderMap();//LoadTestMap();
+            tilemap = MapGenerator.WiderMap();
             textureStore = new() { new Rectangle(0, 0, 32, 32) };
             texture = content.Load<Texture2D>("tileset");
         }
@@ -34,6 +35,7 @@ namespace cr_mono.Scenes
                 Data.CurrentScene = Data.Scenes.Settings;
             }
             camera.Update(gameTime);
+            selectedTile = Tile.PixelToIsometric(Mouse.GetState().Position.ToVector2(), camera);
         }
 
         internal override void draw(SpriteBatch spriteBatch)
@@ -41,15 +43,17 @@ namespace cr_mono.Scenes
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             
             foreach (var item in tilemap) {
-                Rectangle dst = new(
-                    (int)((item.Key.X * 0.5 * 32) + (item.Key.Y * -0.5 * 32) + (Data.ScreenWidth/2 - 16) 
-                        + camera.Position.X),
-                    (int)((item.Key.X * 0.25 * 32) + (item.Key.Y * 0.25 * 32) + (Data.ScreenHeight/3)
-                        + camera.Position.Y),
-                    32, 32);
+                Rectangle dst = Tile.IsometricToPixel(item.Key, camera);
                 Rectangle src = textureStore[item.Value - 1];
-            
-                spriteBatch.Draw(texture, dst, src, Color.White);
+
+                if (item.Key == selectedTile)
+                {
+                    spriteBatch.Draw(texture, dst, src, Color.Red);
+                }
+                else
+                {
+                    spriteBatch.Draw(texture, dst, src, Color.White);
+                }
             }
             
             spriteBatch.End();

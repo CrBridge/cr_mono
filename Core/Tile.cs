@@ -1,16 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace cr_mono.Core
 {
     internal class Tile
     {
-        // This class could include the enum for tile types (air, solid, half, stairs etc.)
-        // Also could have helper functions for pixel co-ord to iso etc.
-        // For finding the tile a mouse is hovering over, I would need to convert pixel pos to values
-        // that can check against iso grid, then check if there is a tile present at that position
+        // basic class for helper functions for now
+        // This class may also include the enum for tile types (air, solid, half, stairs etc.)
+        internal static Rectangle IsometricToPixel(Vector2 itemKey, Camera camera) {
+            return new Rectangle(
+                (int)((itemKey.X * 0.5 * 32) + (itemKey.Y * -0.5 * 32) + camera.Position.X),
+                (int)((itemKey.X * 0.25 * 32) + (itemKey.Y * 0.25 * 32) + camera.Position.Y),
+                32, 32);
+        }
+
+        internal static Vector2 PixelToIsometric(Vector2 mousePos, Camera camera) {
+            // for now, tile is size 32, may have zoom levels (enum) later.
+            float screenX = mousePos.X - camera.Position.X - 16;
+            float screenY = mousePos.Y - camera.Position.Y - 8;
+
+            int gridX = (int)Math.Round((screenY / 16) + (screenX / 32), 0);
+            int gridY = (int)Math.Round((screenY / 16) - (screenX / 32), 0);
+
+            return new Vector2(gridX, gridY);
+        }
     }
 }

@@ -27,30 +27,27 @@ namespace cr_mono.Core
             return map;
         }
 
-        // temp function just for testing out different map shapes. The iterating here
-        //  pretty bad and would scale horribly, but maps will stay real small so maybe Ok.
         internal static Dictionary<Vector2, int> WiderMap()
         {
             Dictionary<Vector2, int> map = new();
-            int width = 4, height = 4;
-            int extraWidth = 6;
+            int width = 5, height = 8;
 
-            for (int y = 0; y < height; y++)
+            for (int x = 0; x < height; x++)
             {
-                for (int x = 0; x < width; x++)
-                {
-                    map[new Vector2(x, y)] = 1;
-                }
+                if (x != 0)
+                    map[new Vector2(x, x)] = 1;
+                map[new Vector2(x + 1, x)] = 1;
+                map[new Vector2(x, x + 1)] = 1;
             }
-
-            for (int i = 1; i <= extraWidth; i++)
+ 
+            for (int i = 1; i <= width; i++)
             {
                 Dictionary<Vector2, int> newTiles = [];
 
                 foreach (var tile in map.Keys.ToList())
                 {
-                    Vector2 leftExpansion = new(tile.X - i, tile.Y + i);
-                    Vector2 rightExpansion = new(tile.X + i, tile.Y - i);
+                    Vector2 leftExpansion = new(tile.X - 1, tile.Y + 1);
+                    Vector2 rightExpansion = new(tile.X + 1, tile.Y - 1);
 
                     if (!map.ContainsKey(leftExpansion))
                         newTiles[leftExpansion] = 1;
@@ -64,7 +61,6 @@ namespace cr_mono.Core
                     map[newTile.Key] = newTile.Value;
                 }
             }
-
             var sortedMap = map.OrderBy(pair => pair.Key.Y)
                                 .ThenBy(pair => pair.Key.X)
                                 .ToDictionary();
