@@ -8,26 +8,45 @@ namespace cr_mono.Scenes
 {
     internal class MenuScene : Component
     {
+        Texture2D buttonTexture;
+        bool isSelected = false;
+        Rectangle buttonSrc;
+        Rectangle buttonDst;
+
         internal override void LoadContent(ContentManager content)
         {
-            //
+            buttonTexture = content.Load<Texture2D>("ui");
+            buttonDst = new Rectangle(Data.ScreenWidth / 2 - 128, Data.ScreenHeight / 2 - 32, 256, 64);
+            buttonSrc = new Rectangle(0, 0, 128, 32);
         }
 
         internal override void update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.D2))
+            MouseState ms = Mouse.GetState();
+
+            if (buttonDst.Contains(ms.Position.ToVector2()))
             {
-                Data.CurrentScene = Data.Scenes.Game;
+                isSelected = true;
+                if (ms.LeftButton == ButtonState.Pressed) {
+                    Data.CurrentScene = Data.Scenes.Game;
+                }
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.D3))
-            {
-                Data.CurrentScene = Data.Scenes.Settings;
+            else {
+                isSelected = false;
             }
         }
 
         internal override void draw(SpriteBatch spriteBatch)
         {
-            //
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            if (isSelected)
+            {
+                spriteBatch.Draw(buttonTexture, buttonDst, buttonSrc, Color.DarkGreen);
+            }
+            else {
+                spriteBatch.Draw(buttonTexture, buttonDst, buttonSrc, Color.White);
+            }
+            spriteBatch.End();
         }
     }
 }

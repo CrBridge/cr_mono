@@ -45,7 +45,7 @@ namespace cr_mono.Core
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkMagenta);
+            GraphicsDevice.Clear(Color.Black);
 
             gsm.draw(spriteBatch);
 

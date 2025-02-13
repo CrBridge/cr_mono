@@ -12,13 +12,13 @@ namespace cr_mono.Core
     //  different sprites etc.
     internal class MapGenerator
     {
-        internal static Dictionary<Vector2, int> LoadTestMap()
+        internal static Dictionary<Vector2, int> DiamondLevel(int size)
         {
             Dictionary<Vector2, int> map = [];
 
-            for (int y = 0; y < 10; y++)
+            for (int y = 0; y < size; y++)
             {
-                for (int x = 0; x < 10; x++)
+                for (int x = 0; x < size; x++)
                 {
                     map[new Vector2(x, y)] = 1;
                 }
@@ -27,10 +27,10 @@ namespace cr_mono.Core
             return map;
         }
 
-        internal static Dictionary<Vector2, int> WiderMap()
+        internal static Dictionary<Vector2, int> JaggedLevel(int size)
         {
             Dictionary<Vector2, int> map = new();
-            int width = 5, height = 8;
+            int width = (size-2)/2, height = size;
 
             for (int x = 0; x < height; x++)
             {
@@ -43,19 +43,19 @@ namespace cr_mono.Core
             for (int i = 1; i <= width; i++)
             {
                 Dictionary<Vector2, int> newTiles = [];
-
+            
                 foreach (var tile in map.Keys.ToList())
                 {
                     Vector2 leftExpansion = new(tile.X - 1, tile.Y + 1);
                     Vector2 rightExpansion = new(tile.X + 1, tile.Y - 1);
-
+            
                     if (!map.ContainsKey(leftExpansion))
                         newTiles[leftExpansion] = 1;
-
+            
                     if (!map.ContainsKey(rightExpansion))
                         newTiles[rightExpansion] = 1;
                 }
-
+            
                 foreach (var newTile in newTiles)
                 {
                     map[newTile.Key] = newTile.Value;
