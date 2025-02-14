@@ -16,6 +16,7 @@ namespace cr_mono.Core
 
         internal static Vector2 PixelToIsometric(Vector2 mousePos, Camera camera) {
             // for now, tile is size 32, may have zoom levels (enum) later.
+            mousePos = mousePos / (Data.ScreenWidth / Data.NativeWidth);
             float screenX = mousePos.X - camera.Position.X - 16;
             float screenY = mousePos.Y - camera.Position.Y - 8;
 

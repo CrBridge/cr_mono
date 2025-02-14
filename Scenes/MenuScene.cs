@@ -16,15 +16,16 @@ namespace cr_mono.Scenes
         internal override void LoadContent(ContentManager content)
         {
             buttonTexture = content.Load<Texture2D>("ui");
-            buttonDst = new Rectangle(Data.ScreenWidth / 2 - 128, Data.ScreenHeight / 2 - 32, 256, 64);
+            buttonDst = new Rectangle(Data.NativeWidth / 2 - 128, Data.NativeHeight / 2 - 32, 256, 64);
             buttonSrc = new Rectangle(0, 0, 128, 32);
         }
 
         internal override void update(GameTime gameTime)
         {
             MouseState ms = Mouse.GetState();
+            Vector2 scaledPos = ms.Position.ToVector2() / (Data.ScreenWidth / Data.NativeWidth);
 
-            if (buttonDst.Contains(ms.Position.ToVector2()))
+            if (buttonDst.Contains(scaledPos))
             {
                 isSelected = true;
                 if (ms.LeftButton == ButtonState.Pressed) {

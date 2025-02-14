@@ -9,7 +9,7 @@ namespace cr_mono.Core
 
         public Camera() {
             // the 16 here is half of the tile size, so may need to account for that
-            this.Position = new Vector2(Data.ScreenWidth / 2 - 16, Data.ScreenHeight / 3);
+            this.Position = new Vector2(Data.NativeWidth / 2 - 16, Data.NativeHeight / 3);
         }
 
         public void Update(GameTime gameTime) {

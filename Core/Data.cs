@@ -2,8 +2,10 @@
 {
     public static class Data
     {
-        public static int ScreenWidth { get; set; } = 768;
-        public static int ScreenHeight { get; set; } = 432;
+        public static int ScreenWidth { get; set; } = 960;
+        public static int ScreenHeight { get; set; } = 540;
+        public static int NativeWidth { get; set; } = 480;
+        public static int NativeHeight { get; set; } = 270;
 
         public static bool Exit { get; set; } = false;
 
