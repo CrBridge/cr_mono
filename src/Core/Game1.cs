@@ -17,7 +17,9 @@ namespace cr_mono.Core
         {
             graphics = new GraphicsDeviceManager(this) {
                 PreferredBackBufferWidth = Data.ScreenWidth,
-                PreferredBackBufferHeight = Data.ScreenHeight
+                PreferredBackBufferHeight = Data.ScreenHeight,
+                HardwareModeSwitch = false,
+                IsFullScreen = Data.IsFullScreen
             };
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -33,6 +35,7 @@ namespace cr_mono.Core
         {
             renderTarget = new RenderTarget2D(GraphicsDevice, Data.NativeWidth, Data.NativeHeight);
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            ResourceManager.LoadContent(Content);
             gsm.LoadContent(Content);
         }
 

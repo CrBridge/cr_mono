@@ -12,18 +12,23 @@ namespace cr_mono.Scenes
         bool isSelected = false;
         Rectangle buttonSrc;
         Rectangle buttonDst;
+        Rectangle buttonSelectedDst;
 
         internal override void LoadContent(ContentManager content)
         {
-            buttonTexture = content.Load<Texture2D>("ui");
-            buttonDst = new Rectangle(Data.NativeWidth / 2 - 128, Data.NativeHeight / 2 - 32, 256, 64);
+            buttonTexture = content.Load<Texture2D>("Textures/ui");
+            buttonDst = new Rectangle(Data.NativeWidth / 2 - 64, Data.NativeHeight / 2 - 16, 128, 32);
+            buttonSelectedDst = new Rectangle(Data.NativeWidth / 2 - 72, Data.NativeHeight / 2 - 18, 144, 36);
             buttonSrc = new Rectangle(0, 0, 128, 32);
         }
 
         internal override void update(GameTime gameTime)
         {
             MouseState ms = Mouse.GetState();
-            Vector2 scaledPos = ms.Position.ToVector2() / (Data.ScreenWidth / Data.NativeWidth);
+            int screenWidth = Data.IsFullScreen ? 
+                GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width : Data.ScreenWidth;
+            Vector2 scaledPos = ms.Position.ToVector2() /
+                (screenWidth / (float)Data.NativeWidth);
 
             if (buttonDst.Contains(scaledPos))
             {
@@ -42,7 +47,7 @@ namespace cr_mono.Scenes
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             if (isSelected)
             {
-                spriteBatch.Draw(buttonTexture, buttonDst, buttonSrc, Color.DarkGreen);
+                spriteBatch.Draw(buttonTexture, buttonSelectedDst, buttonSrc, Color.DarkGreen);
             }
             else {
                 spriteBatch.Draw(buttonTexture, buttonDst, buttonSrc, Color.White);

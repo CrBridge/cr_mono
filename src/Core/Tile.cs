@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace cr_mono.Core
 {
@@ -16,7 +17,11 @@ namespace cr_mono.Core
 
         internal static Vector2 PixelToIsometric(Vector2 mousePos, Camera camera) {
             // for now, tile is size 32, may have zoom levels (enum) later.
-            mousePos = mousePos / (Data.ScreenWidth / Data.NativeWidth);
+            int screenWidth = Data.IsFullScreen ?
+                GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width : Data.ScreenWidth;
+            mousePos = mousePos /
+                (screenWidth / (float)Data.NativeWidth);
+            
             float screenX = mousePos.X - camera.Position.X - 16;
             float screenY = mousePos.Y - camera.Position.Y - 8;
 

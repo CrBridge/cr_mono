@@ -23,8 +23,8 @@ namespace cr_mono.Scenes
             camera = new Camera();
             tilemap = MapGenerator.JaggedLevel(12);
             textureStore = new() { new Rectangle(0, 0, 32, 32) };
-            tileSetTexture = content.Load<Texture2D>("tileset");
-            unitsTexture = content.Load<Texture2D>("units");
+            tileSetTexture = content.Load<Texture2D>("Textures/tileset");
+            unitsTexture = content.Load<Texture2D>("Textures/units");
         }
 
         internal override void update(GameTime gameTime)
