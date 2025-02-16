@@ -9,7 +9,7 @@ namespace cr_mono.Scenes
     internal class MenuScene : Component
     {
         Texture2D buttonTexture;
-        bool isSelected = false;
+        private int selectedButton = -1;
         Rectangle buttonSrc;
         Rectangle buttonDst;
         Rectangle buttonSelectedDst;
@@ -32,20 +32,20 @@ namespace cr_mono.Scenes
 
             if (buttonDst.Contains(scaledPos))
             {
-                isSelected = true;
+                selectedButton = 0;
                 if (ms.LeftButton == ButtonState.Pressed) {
                     Data.CurrentScene = Data.Scenes.Game;
                 }
             }
             else {
-                isSelected = false;
+                selectedButton = -1;
             }
         }
 
         internal override void draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            if (isSelected)
+            if (selectedButton == 0)
             {
                 spriteBatch.Draw(buttonTexture, buttonSelectedDst, buttonSrc, Color.DarkGreen);
             }

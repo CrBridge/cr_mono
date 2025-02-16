@@ -10,7 +10,7 @@ namespace cr_mono.Scenes
     internal class GameScene : Component
     {
         Texture2D tileSetTexture;
-        Texture2D unitsTexture;
+        //Texture2D unitsTexture;
         
         private Dictionary<Vector2, int> tilemap;
         private List<Rectangle> textureStore;
@@ -21,10 +21,13 @@ namespace cr_mono.Scenes
         internal override void LoadContent(ContentManager content)
         {
             camera = new Camera();
-            tilemap = MapGenerator.JaggedLevel(12);
-            textureStore = new() { new Rectangle(0, 0, 32, 32) };
+            tilemap = MapGenerator.DiamondLevel(12);
+            textureStore = new() { 
+                new Rectangle(0, 0, 32, 32),
+                new Rectangle(32, 0, 32, 32)
+            };
             tileSetTexture = content.Load<Texture2D>("Textures/tileset");
-            unitsTexture = content.Load<Texture2D>("Textures/units");
+            //unitsTexture = content.Load<Texture2D>("Textures/units");
         }
 
         internal override void update(GameTime gameTime)
@@ -57,9 +60,9 @@ namespace cr_mono.Scenes
                     spriteBatch.Draw(tileSetTexture, dst, src, Color.White);
                 }
             }
-            Rectangle unitDst = Tile.IsometricToPixel(new Vector2(1 - 1, 1 - 1), camera);
-            Rectangle unitSrc = new Rectangle(0, 0, 32, 32);
-            spriteBatch.Draw(unitsTexture, unitDst, unitSrc, Color.White);
+            //Rectangle unitDst = Tile.IsometricToPixel(new Vector2(1 - 1, 1 - 1), camera);
+            //Rectangle unitSrc = new Rectangle(0, 0, 32, 32);
+            //spriteBatch.Draw(unitsTexture, unitDst, unitSrc, Color.White);
             
             spriteBatch.End();
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using cr_mono.src.Core;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,6 +22,14 @@ namespace cr_mono.Core
                 for (int x = 0; x < size; x++)
                 {
                     map[new Vector2(x, y)] = 1;
+                }
+            }
+
+            // adding noise
+            float[][] noise = Noise.GeneratePerlinNoise(2, size, size, 5);
+            foreach (var tile in map) {
+                if (noise[(int)tile.Key.X][(int)tile.Key.Y] >= 0.5) {
+                    map[tile.Key] = 2;
                 }
             }
 
