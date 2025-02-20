@@ -81,7 +81,7 @@ namespace cr_mono.Core.GameMath
 
                 if (noise[noiseX][noiseY] >= 0.5)
                 {
-                    map[tile] = 3;
+                    map[tile] = 2;
                 }
                 if (noise[noiseX][noiseY] <= 0.3)
                 {

@@ -1,4 +1,6 @@
-﻿namespace cr_mono.Core
+﻿using Microsoft.Xna.Framework.Input;
+
+namespace cr_mono.Core
 {
     public static class Data
     {
@@ -11,5 +13,8 @@
 
         public enum Scenes { Menu, Game, Settings }
         public static Scenes CurrentScene { get; set; } = Scenes.Menu;
+
+        public static KeyboardState previousKeyboardState { get; set; } = Keyboard.GetState();
+        public static KeyboardState currentKeyboardState { get; set; } = previousKeyboardState;
     }
 }

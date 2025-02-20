@@ -41,6 +41,9 @@ namespace cr_mono.Core
 
         protected override void Update(GameTime gameTime)
         {
+            Data.previousKeyboardState = Data.currentKeyboardState;
+            Data.currentKeyboardState = Keyboard.GetState();
+            
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 

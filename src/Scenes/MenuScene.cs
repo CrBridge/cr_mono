@@ -9,7 +9,6 @@ namespace cr_mono.Scenes
 {
     internal class MenuScene : Component
     {
-        Texture2D buttonTexture;
         private int selectedButton = -1;
         private Rectangle buttonSrc;
         private Rectangle buttonDst;
@@ -20,7 +19,6 @@ namespace cr_mono.Scenes
 
         internal override void LoadContent(ContentManager content)
         {
-            buttonTexture = content.Load<Texture2D>("Textures/ui");
             buttonDst = new Rectangle(Data.NativeWidth / 2 - 64, Data.NativeHeight / 2 - 16, 128, 32);
             buttonSelectedDst = new Rectangle(Data.NativeWidth / 2 - 72, Data.NativeHeight / 2 - 18, 144, 36);
             buttonSrc = new Rectangle(0, 0, 128, 32);
@@ -63,11 +61,11 @@ namespace cr_mono.Scenes
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             if (selectedButton == 0)
             {
-                spriteBatch.Draw(buttonTexture, buttonSelectedDst, buttonSrc, Color.DarkGreen);
+                spriteBatch.Draw(ResourceManager.UI, buttonSelectedDst, buttonSrc, Color.DarkGreen);
                 spriteBatch.DrawString(ResourceManager.FontRegular, text, selectedTextPos, Color.White);
             }
             else {
-                spriteBatch.Draw(buttonTexture, buttonDst, buttonSrc, Color.White);
+                spriteBatch.Draw(ResourceManager.UI, buttonDst, buttonSrc, Color.White);
                 spriteBatch.DrawString(ResourceManager.FontRegular, text, textPos, Color.Black);
             }
             spriteBatch.End();

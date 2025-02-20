@@ -22,7 +22,7 @@ namespace cr_mono.Scenes
         internal override void LoadContent(ContentManager content)
         {
             camera = new Camera();
-            tilemap = MapGenerator.JaggedLevel(12);
+            tilemap = MapGenerator.JaggedLevel(50);
             textureStore = new() { 
                 new Rectangle(0, 0, 32, 32),
                 new Rectangle(32, 0, 32, 32),
