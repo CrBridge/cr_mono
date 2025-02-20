@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace cr_mono.Core
+namespace cr_mono.Core.GameMath
 {
     public class Camera
     {

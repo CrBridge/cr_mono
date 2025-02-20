@@ -1,16 +1,10 @@
-﻿using cr_mono.src.Core;
+﻿using cr_mono.Core;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace cr_mono.Core
+namespace cr_mono.Core.GameMath
 {
-    // functions for generating the tilemap Dictionaries, and maybe some other stuff too
-    // To just make cool shapes, I just need to look into/think about the math.
-    // If I wanted structures on the map, that might need to be its own thing,
-    //  could maybe use wave function collapse
-    // This could also be where I create the texture store as some levels may be using
-    //  different sprites etc.
     internal class MapGenerator
     {
         internal static Dictionary<Vector2, int> DiamondLevel(int size)
@@ -30,6 +24,10 @@ namespace cr_mono.Core
             foreach (var tile in map) {
                 if (noise[(int)tile.Key.X][(int)tile.Key.Y] >= 0.5) {
                     map[tile.Key] = 2;
+                }
+                if (noise[(int)tile.Key.X][(int)tile.Key.Y] <= 0.3)
+                {
+                    map[tile.Key] = 3;
                 }
             }
 
@@ -70,6 +68,27 @@ namespace cr_mono.Core
                     map[newTile.Key] = newTile.Value;
                 }
             }
+
+            int minX = (int)map.Keys.Min(tile => tile.X);
+            int minY = (int)map.Keys.Min(tile => tile.Y);
+
+            int noiseSize = size * 2 - 1;
+            float[][] noise = Noise.GeneratePerlinNoise(3, noiseSize, noiseSize, 6);
+            foreach (var tile in map.Keys.ToList())
+            {
+                int noiseX = (int)tile.X - minX;
+                int noiseY = (int)tile.Y - minY;
+
+                if (noise[noiseX][noiseY] >= 0.5)
+                {
+                    map[tile] = 3;
+                }
+                if (noise[noiseX][noiseY] <= 0.3)
+                {
+                    map[tile] = 3;
+                }
+            }
+
             var sortedMap = map.OrderBy(pair => pair.Key.Y)
                                 .ThenBy(pair => pair.Key.X)
                                 .ToDictionary();

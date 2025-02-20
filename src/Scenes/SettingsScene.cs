@@ -23,6 +23,20 @@ namespace cr_mono.Scenes
             {
                 Data.CurrentScene = Data.Scenes.Game;
             }
+            if (Keyboard.GetState().IsKeyDown(Keys.F))
+            {
+                if (Data.IsFullScreen)
+                {
+                    Data.IsFullScreen = false;
+                    Core.Game1.graphics.IsFullScreen = false;
+                    Core.Game1.graphics.ApplyChanges();
+                }
+                else {
+                    Data.IsFullScreen = true;
+                    Core.Game1.graphics.IsFullScreen = true;
+                    Core.Game1.graphics.ApplyChanges();
+                }
+            }
         }
 
         internal override void draw(SpriteBatch spriteBatch)

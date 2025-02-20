@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace cr_mono.src.Core
+namespace cr_mono.Core.GameMath
 {
     // class for generating some basic noise i can use to sample
     // the isometric maps to place features such as water, elevation etc.

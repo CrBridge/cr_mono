@@ -1,4 +1,5 @@
 ﻿using cr_mono.Core;
+using cr_mono.Core.GameMath;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
@@ -21,10 +22,11 @@ namespace cr_mono.Scenes
         internal override void LoadContent(ContentManager content)
         {
             camera = new Camera();
-            tilemap = MapGenerator.DiamondLevel(12);
+            tilemap = MapGenerator.JaggedLevel(12);
             textureStore = new() { 
                 new Rectangle(0, 0, 32, 32),
-                new Rectangle(32, 0, 32, 32)
+                new Rectangle(32, 0, 32, 32),
+                new Rectangle(64, 0, 32, 32)
             };
             tileSetTexture = content.Load<Texture2D>("Textures/tileset");
             //unitsTexture = content.Load<Texture2D>("Textures/units");
@@ -53,11 +55,33 @@ namespace cr_mono.Scenes
 
                 if (item.Key == selectedTile)
                 {
-                    spriteBatch.Draw(tileSetTexture, dst, src, Color.Silver);
+                    if (item.Value == 3)
+                    {
+                        Vector2 mtn = new Vector2(item.Key.X - 1, item.Key.Y - 1);
+                        Rectangle mtnDst = Tile.IsometricToPixel(mtn, camera);
+                        Rectangle groundSrc = textureStore[0];
+                        spriteBatch.Draw(tileSetTexture, dst, groundSrc, Color.Silver);
+                        spriteBatch.Draw(tileSetTexture, mtnDst, src, Color.Silver);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(tileSetTexture, dst, src, Color.Silver);
+                    }
                 }
                 else
                 {
-                    spriteBatch.Draw(tileSetTexture, dst, src, Color.White);
+                    if (item.Value == 3)
+                    {
+                        Vector2 mtn = new Vector2(item.Key.X - 1, item.Key.Y - 1);
+                        Rectangle mtnDst = Tile.IsometricToPixel(mtn, camera);
+                        Rectangle groundSrc = textureStore[0];
+                        spriteBatch.Draw(tileSetTexture, dst, groundSrc, Color.White);
+                        spriteBatch.Draw(tileSetTexture, mtnDst, src, Color.White);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(tileSetTexture, dst, src, Color.White);
+                    }
                 }
             }
             //Rectangle unitDst = Tile.IsometricToPixel(new Vector2(1 - 1, 1 - 1), camera);
