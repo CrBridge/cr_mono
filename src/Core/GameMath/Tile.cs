@@ -8,11 +8,14 @@ namespace cr_mono.Core.GameMath
     {
         // basic class for helper functions for now
         // This class may also include the enum for tile types (air, solid, half, stairs etc.)
-        internal static Rectangle IsometricToPixel(Vector2 itemKey, Camera camera) {
+        internal static Rectangle IsometricToPixel(Vector2 itemKey, Camera camera, int layer) {
             int zoom = camera.zoomLevels[camera.zoomIndex];
+            int x = (int)itemKey.X - layer;
+            int y = (int)itemKey.Y - layer;
+
             return new Rectangle(
-                (int)((itemKey.X * 0.5 * zoom) + (itemKey.Y * -0.5 * zoom) + camera.Position.X),
-                (int)((itemKey.X * 0.25 * zoom) + (itemKey.Y * 0.25 * zoom) + camera.Position.Y),
+                (int)((x * 0.5 * zoom) + (y * -0.5 * zoom) + camera.Position.X),
+                (int)((x * 0.25 * zoom) + (y * 0.25 * zoom) + camera.Position.Y),
                 zoom, zoom);
         }
 

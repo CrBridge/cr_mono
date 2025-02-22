@@ -20,6 +20,12 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/silkscreen_regular.spritefont
 
+#begin Shaders/ShaderTest.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Shaders/ShaderTest.fx
+
 #begin Textures/tileset.png
 /importer:TextureImporter
 /processor:TextureProcessor

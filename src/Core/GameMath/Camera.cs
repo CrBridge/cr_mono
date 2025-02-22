@@ -9,10 +9,12 @@ namespace cr_mono.Core.GameMath
         public int zoomIndex = 2;
 
         public Vector2 Position;
+        private Vector2 centreTile;
 
         public Camera() {
             this.Position = new Vector2(
                 Data.NativeWidth / 2 - (zoomLevels[zoomIndex] / 2), Data.NativeHeight / 3);
+            this.centreTile = Vector2.Zero;
         }
 
         public void Update(GameTime gameTime) {
@@ -43,6 +45,11 @@ namespace cr_mono.Core.GameMath
                     zoomIndex--;
                 }
             }
+        }
+
+        public Vector2 UpdateCentreTile() {
+            Vector2 test = Vector2.Zero;
+            return Tile.PixelToIsometric(test, this);
         }
     }
 }
