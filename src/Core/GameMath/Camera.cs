@@ -9,12 +9,10 @@ namespace cr_mono.Core.GameMath
         public int zoomIndex = 2;
 
         public Vector2 Position;
-        private Vector2 centreTile;
 
         public Camera() {
             this.Position = new Vector2(
                 Data.NativeWidth / 2 - (zoomLevels[zoomIndex] / 2), Data.NativeHeight / 3);
-            this.centreTile = Vector2.Zero;
         }
 
         public void Update(GameTime gameTime) {
@@ -36,20 +34,25 @@ namespace cr_mono.Core.GameMath
             if (Data.currentKeyboardState.IsKeyDown(Keys.I) && !Data.previousKeyboardState.IsKeyDown(Keys.I))
             {
                 if (zoomIndex < zoomLevels.Length - 1) {
-                    zoomIndex++;
+                    AdjustZoom(zoomIndex + 1);
                 }
             }
             if (Data.currentKeyboardState.IsKeyDown(Keys.O) && !Data.previousKeyboardState.IsKeyDown(Keys.O))
             {
                 if (zoomIndex > 0) {
-                    zoomIndex--;
+                    AdjustZoom(zoomIndex - 1);
                 }
             }
         }
 
-        public Vector2 UpdateCentreTile() {
-            Vector2 test = Vector2.Zero;
-            return Tile.PixelToIsometric(test, this);
+        private void AdjustZoom(int newZoom) {
+            Vector2 centre = new Vector2(
+                Data.NativeWidth / 2, Data.NativeHeight / 2);
+            Vector2 worldCentre = (centre - Position) / zoomLevels[zoomIndex];
+
+            zoomIndex = newZoom;
+
+            Position = centre - worldCentre * zoomLevels[zoomIndex];
         }
     }
 }
