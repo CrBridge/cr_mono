@@ -103,5 +103,24 @@ namespace cr_mono.Core.GameMath
 
             return (sortedMap, topLayer);
         }
+
+        internal static Dictionary<Vector2, bool> GenerateNavMap(
+            Dictionary<Vector2, int> baseLayer, 
+            Dictionary<Vector2, int> topLayer)
+        {
+            Dictionary<Vector2, bool> navMap = new();
+
+            foreach (var tile in baseLayer) {
+                if (tile.Value == 1 && !topLayer.ContainsKey(tile.Key))
+                {
+                    navMap[tile.Key] = true;
+                }
+                else {
+                    navMap[tile.Key] = false;
+                }
+            }
+
+            return navMap;
+        }
     }
 }

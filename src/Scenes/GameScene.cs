@@ -13,6 +13,7 @@ namespace cr_mono.Scenes
         Texture2D tileSetTexture;
 
         private Dictionary<Vector2, int> baseLayer, topLayer;
+        private Dictionary<Vector2, bool> navMap;
         private List<Rectangle> textureStore;
 
         private Camera camera;
@@ -23,6 +24,7 @@ namespace cr_mono.Scenes
         {
             camera = new Camera();
             (baseLayer, topLayer) = MapGenerator.JaggedLevel(50);
+            navMap = MapGenerator.GenerateNavMap(baseLayer, topLayer);
             textureStore = new() { 
                 new Rectangle(0, 0, 32, 32),
                 new Rectangle(32, 0, 32, 32),
@@ -63,7 +65,7 @@ namespace cr_mono.Scenes
                 Rectangle dst = Tile.IsometricToPixel(item.Key, camera, layerNumber);
                 Rectangle src = textureStore[item.Value - 1];
 
-                if (item.Key == selectedTile && camera.zoomIndex > 0) {
+                if (item.Key == selectedTile && camera.zoomIndex > 0 &&) {
                     spritebatch.Draw(tileSetTexture, dst, src, Color.Silver);
                 }
                 else {
