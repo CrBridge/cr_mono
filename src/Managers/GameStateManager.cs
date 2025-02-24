@@ -18,31 +18,31 @@ namespace cr_mono.Managers
             ss.LoadContent(content);
         }
         
-        internal override void update(GameTime gameTime) {
+        internal override void Update(GameTime gameTime) {
             switch (Data.CurrentScene) {
                 case Data.Scenes.Menu:
-                    ms.update(gameTime);
+                    ms.Update(gameTime);
                     break;
                 case Data.Scenes.Game:
-                    gs.update(gameTime);
+                    gs.Update(gameTime);
                     break;
                 case Data.Scenes.Settings:
-                    ss.update(gameTime);
+                    ss.Update(gameTime);
                     break;
             }
         }
 
-        internal override void draw(SpriteBatch spriteBatch) {
+        internal override void Draw(SpriteBatch spriteBatch) {
             switch (Data.CurrentScene)
             {
                 case Data.Scenes.Menu:
-                    ms.draw(spriteBatch);
+                    ms.Draw(spriteBatch);
                     break;
                 case Data.Scenes.Game:
-                    gs.draw(spriteBatch);
+                    gs.Draw(spriteBatch);
                     break;
                 case Data.Scenes.Settings:
-                    ss.draw(spriteBatch);
+                    ss.Draw(spriteBatch);
                     break;
             }
         }

@@ -43,11 +43,12 @@ namespace cr_mono.Core
         {
             Data.previousKeyboardState = Data.currentKeyboardState;
             Data.currentKeyboardState = Keyboard.GetState();
-            
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
 
-            gsm.update(gameTime);
+            if (Data.Exit == true) {
+                Exit();
+            }
+
+            gsm.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -56,7 +57,7 @@ namespace cr_mono.Core
         {
             GraphicsDevice.Clear(Color.Black);
             GraphicsDevice.SetRenderTarget(renderTarget);
-            gsm.draw(spriteBatch);
+            gsm.Draw(spriteBatch);
 
             GraphicsDevice.SetRenderTarget(null);
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);

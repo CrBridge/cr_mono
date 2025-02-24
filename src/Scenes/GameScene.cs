@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace cr_mono.Scenes
@@ -22,8 +23,9 @@ namespace cr_mono.Scenes
 
         internal override void LoadContent(ContentManager content)
         {
+            Data.RNG = new Random(3);
             camera = new Camera();
-            (baseLayer, topLayer) = MapGenerator.JaggedLevel(50);
+            (baseLayer, topLayer) = MapGenerator.JaggedLevel(50, Data.RNG);
             navMap = MapGenerator.GenerateNavMap(baseLayer, topLayer);
             textureStore = new() { 
                 new Rectangle(0, 0, 32, 32),
@@ -31,11 +33,14 @@ namespace cr_mono.Scenes
                 new Rectangle(64, 0, 32, 32)
             };
             tileSetTexture = content.Load<Texture2D>("Textures/tileset");
+
         }
 
-        internal override void update(GameTime gameTime)
+        internal override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.D1)) {
+            if (Data.currentKeyboardState.IsKeyDown(Keys.Tab) && 
+                !Data.previousKeyboardState.IsKeyDown(Keys.Tab))
+            {
                 Data.CurrentScene = Data.Scenes.Menu;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D3))
@@ -46,17 +51,17 @@ namespace cr_mono.Scenes
             selectedTile = Tile.PixelToIsometric(Mouse.GetState().Position.ToVector2(), camera);
         }
 
-        internal override void draw(SpriteBatch spriteBatch)
+        internal override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            renderLayer(spriteBatch, baseLayer, 0);
-            renderLayer(spriteBatch, topLayer, 1);
+            RenderLayer(spriteBatch, baseLayer, 0);
+            RenderLayer(spriteBatch, topLayer, 1);
            
             spriteBatch.End();
         }
 
-        internal void renderLayer(
+        internal void RenderLayer(
             SpriteBatch spritebatch, 
             Dictionary<Vector2, int> layer, 
             int layerNumber)
@@ -65,7 +70,7 @@ namespace cr_mono.Scenes
                 Rectangle dst = Tile.IsometricToPixel(item.Key, camera, layerNumber);
                 Rectangle src = textureStore[item.Value - 1];
 
-                if (item.Key == selectedTile && camera.zoomIndex > 0 &&) {
+                if (item.Key == selectedTile && camera.zoomIndex > 0) {
                     spritebatch.Draw(tileSetTexture, dst, src, Color.Silver);
                 }
                 else {

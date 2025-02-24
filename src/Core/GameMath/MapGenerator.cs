@@ -1,5 +1,6 @@
 ﻿using cr_mono.Core;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,7 +8,9 @@ namespace cr_mono.Core.GameMath
 {
     internal class MapGenerator
     {
-        internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) DiamondLevel(int size)
+        internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) DiamondLevel(
+            int size,
+            Random rng)
         {
             Dictionary<Vector2, int> baseLayer = [];
             Dictionary<Vector2, int> topLayer = [];
@@ -21,7 +24,7 @@ namespace cr_mono.Core.GameMath
             }
 
             // adding noise
-            float[][] noise = Noise.GeneratePerlinNoise(2, size, size, 5);
+            float[][] noise = Noise.GeneratePerlinNoise(rng, size, size, 5);
             foreach (var tile in baseLayer) {
                 if (noise[(int)tile.Key.X][(int)tile.Key.Y] >= 0.5) {
                     baseLayer[tile.Key] = 2;
@@ -35,7 +38,9 @@ namespace cr_mono.Core.GameMath
             return (baseLayer, topLayer);
         }
 
-        internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) JaggedLevel(int size)
+        internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) JaggedLevel(
+            int size, 
+            Random rng)
         {
             Dictionary<Vector2, int> baseLayer = new();
             Dictionary<Vector2, int> topLayer = new();
@@ -81,7 +86,7 @@ namespace cr_mono.Core.GameMath
             Vector2 centre = new Vector2(centreX, centreY);
 
             int noiseSize = size * 2 - 1;
-            float[][] noise = Noise.GeneratePerlinNoise(3, noiseSize, noiseSize, 6);
+            float[][] noise = Noise.GeneratePerlinNoise(rng, noiseSize, noiseSize, 6);
             foreach (var tile in baseLayer.Keys.ToList())
             {
                 int noiseX = (int)tile.X - minX;
@@ -97,11 +102,14 @@ namespace cr_mono.Core.GameMath
                 }
             }
 
-            var sortedMap = baseLayer.OrderBy(pair => pair.Key.Y)
+            var sortedBase = baseLayer.OrderBy(pair => pair.Key.Y)
+                                .ThenBy(pair => pair.Key.X)
+                                .ToDictionary();
+            var sortedTop = topLayer.OrderBy(pair => pair.Key.Y)
                                 .ThenBy(pair => pair.Key.X)
                                 .ToDictionary();
 
-            return (sortedMap, topLayer);
+            return (sortedBase, sortedTop);
         }
 
         internal static Dictionary<Vector2, bool> GenerateNavMap(

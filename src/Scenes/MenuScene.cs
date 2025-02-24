@@ -1,5 +1,5 @@
 ﻿using cr_mono.Core;
-using cr_mono.Managers;
+using cr_mono.Core.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,35 +9,18 @@ namespace cr_mono.Scenes
 {
     internal class MenuScene : Component
     {
-        private int selectedButton = -1;
-        private Rectangle buttonSrc;
-        private Rectangle buttonDst;
-        private Rectangle buttonSelectedDst;
-        private Vector2 textPos;
-        private Vector2 selectedTextPos;
-        private string text;
+        private InteractiveButton button;
 
         internal override void LoadContent(ContentManager content)
         {
-            buttonDst = new Rectangle(Data.NativeWidth / 2 - 64, Data.NativeHeight / 2 - 16, 128, 32);
-            buttonSelectedDst = new Rectangle(Data.NativeWidth / 2 - 72, Data.NativeHeight / 2 - 18, 144, 36);
-            buttonSrc = new Rectangle(0, 0, 128, 32);
+            Rectangle buttonDst = new Rectangle(Data.NativeWidth / 2 - 64, Data.NativeHeight / 2 - 16, 128, 32);
+            Rectangle buttonSrc = new Rectangle(0, 0, 128, 32);
 
-            text = "Start Game";
-            Vector2 textLength = Managers.ResourceManager.FontRegular.MeasureString(text);
-
-            textPos = new Vector2(
-                buttonDst.X + (buttonDst.Width - textLength.X) / 2,
-                buttonDst.Y + (buttonDst.Height - textLength.Y) / 2
-            );
-
-            selectedTextPos = new Vector2(
-                buttonSelectedDst.X + (buttonSelectedDst.Width - textLength.X) / 2,
-                buttonSelectedDst.Y + (buttonSelectedDst.Height - textLength.Y) / 2
-            );
+            button = new InteractiveButton(
+                buttonDst, buttonSrc, "Start Game", Color.Black, Color.White, Color.DarkGreen);
         }
 
-        internal override void update(GameTime gameTime)
+        internal override void Update(GameTime gameTime)
         {
             MouseState ms = Mouse.GetState();
             int screenWidth = Data.IsFullScreen ? 
@@ -45,29 +28,21 @@ namespace cr_mono.Scenes
             Vector2 scaledPos = ms.Position.ToVector2() /
                 (screenWidth / (float)Data.NativeWidth);
 
-            if (buttonDst.Contains(scaledPos)){
-                selectedButton = 0;
-                if (ms.LeftButton == ButtonState.Pressed) {
-                    Data.CurrentScene = Data.Scenes.Game;
-                }
+            if (button.Pressed(ms, scaledPos)) {
+                Data.CurrentScene = Data.Scenes.Game;
             }
-            else {
-                selectedButton = -1;
+
+            if (Data.currentKeyboardState.IsKeyDown(Keys.Escape)) {
+                Data.Exit = true;
             }
         }
 
-        internal override void draw(SpriteBatch spriteBatch)
+        internal override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            if (selectedButton == 0)
-            {
-                spriteBatch.Draw(ResourceManager.UI, buttonSelectedDst, buttonSrc, Color.DarkGreen);
-                spriteBatch.DrawString(ResourceManager.FontRegular, text, selectedTextPos, Color.White);
-            }
-            else {
-                spriteBatch.Draw(ResourceManager.UI, buttonDst, buttonSrc, Color.White);
-                spriteBatch.DrawString(ResourceManager.FontRegular, text, textPos, Color.Black);
-            }
+
+            button.Draw(spriteBatch);
+            
             spriteBatch.End();
         }
     }

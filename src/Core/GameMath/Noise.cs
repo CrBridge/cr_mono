@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq.Expressions;
 
 namespace cr_mono.Core.GameMath
 {
@@ -24,13 +23,12 @@ namespace cr_mono.Core.GameMath
             return image;
         }
 
-        private static float[][] GenerateWhiteNoise(int width, int height, int seed) { 
-            Random random = new Random(seed);
+        private static float[][] GenerateWhiteNoise(int width, int height, Random rng) { 
             float[][] noise = GetEmptyArray<float>(width, height);
 
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
-                    noise[i][j] = (float)random.NextDouble();
+                    noise[i][j] = (float)rng.NextDouble();
                 }    
             }
 
@@ -74,8 +72,9 @@ namespace cr_mono.Core.GameMath
             return smoothNoise;
         }
 
-        internal static float[][] GeneratePerlinNoise(int seed, int width, int height, int octaveCount) {
-            float[][] baseNoise = GenerateWhiteNoise(width, height, seed);
+        internal static float[][] GeneratePerlinNoise(
+            Random rng, int width, int height, int octaveCount) {
+            float[][] baseNoise = GenerateWhiteNoise(width, height, rng);
             float[][][] smoothNoise = new float[octaveCount][][];
             
             float persistence = 0.5f;

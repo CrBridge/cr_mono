@@ -13,7 +13,7 @@ namespace cr_mono.Scenes
             //
         }
 
-        internal override void update(GameTime gameTime)
+        internal override void Update(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D1))
             {
@@ -39,7 +39,7 @@ namespace cr_mono.Scenes
             }
         }
 
-        internal override void draw(SpriteBatch spriteBatch)
+        internal override void Draw(SpriteBatch spriteBatch)
         {
             //
         }
