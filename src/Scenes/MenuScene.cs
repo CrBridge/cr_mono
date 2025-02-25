@@ -1,4 +1,5 @@
-﻿using cr_mono.Core;
+﻿using System.Collections.Generic;
+using cr_mono.Core;
 using cr_mono.Core.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -9,15 +10,20 @@ namespace cr_mono.Scenes
 {
     internal class MenuScene : Component
     {
-        private InteractiveButton button;
+        private readonly List<InteractiveButton> buttons = [];
 
         internal override void LoadContent(ContentManager content)
         {
-            Rectangle buttonDst = new Rectangle(Data.NativeWidth / 2 - 64, Data.NativeHeight / 2 - 16, 128, 32);
             Rectangle buttonSrc = new Rectangle(0, 0, 128, 32);
+            Rectangle[] buttonsDst = new Rectangle[3];
+            string[] buttonTexts = ["New Game", "Settings", "Exit"];
 
-            button = new InteractiveButton(
-                buttonDst, buttonSrc, "Start Game", Color.Black, Color.White, Color.DarkGreen);
+            for (int i = 0; i < buttonsDst.Length; i++) {
+                buttonsDst[i] = new Rectangle(
+                    Data.NativeWidth / 2 - 64, Data.NativeHeight / 2 - 64 + (i * 48), 128, 32);
+                buttons.Add(new InteractiveButton(
+                    buttonsDst[i], buttonSrc, buttonTexts[i], Color.Black, Color.White, Color.DarkGreen));
+            }
         }
 
         internal override void Update(GameTime gameTime)
@@ -28,11 +34,16 @@ namespace cr_mono.Scenes
             Vector2 scaledPos = ms.Position.ToVector2() /
                 (screenWidth / (float)Data.NativeWidth);
 
-            if (button.Pressed(ms, scaledPos)) {
+            if (buttons[0].Pressed(ms, scaledPos)) {
                 Data.CurrentScene = Data.Scenes.Game;
             }
 
-            if (Data.currentKeyboardState.IsKeyDown(Keys.Escape)) {
+            if (buttons[1].Pressed(ms, scaledPos))
+            {
+                Data.CurrentScene = Data.Scenes.Settings;
+            }
+
+            if (buttons[2].Pressed(ms, scaledPos)) {
                 Data.Exit = true;
             }
         }
@@ -41,7 +52,9 @@ namespace cr_mono.Scenes
         {
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            button.Draw(spriteBatch);
+            foreach (var button in buttons) {
+                button.Draw(spriteBatch);
+            }
             
             spriteBatch.End();
         }

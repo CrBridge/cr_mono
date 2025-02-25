@@ -19,6 +19,7 @@ namespace cr_mono.Scenes
 
         private Camera camera;
         private Vector2 selectedTile;
+        // TODO: use worldCentre to lock cameraPosition when zoom out is max
         private Vector2 worldCentre;
 
         internal override void LoadContent(ContentManager content)
@@ -33,7 +34,6 @@ namespace cr_mono.Scenes
                 new Rectangle(64, 0, 32, 32)
             };
             tileSetTexture = content.Load<Texture2D>("Textures/tileset");
-
         }
 
         internal override void Update(GameTime gameTime)
@@ -42,10 +42,6 @@ namespace cr_mono.Scenes
                 !Data.previousKeyboardState.IsKeyDown(Keys.Tab))
             {
                 Data.CurrentScene = Data.Scenes.Menu;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.D3))
-            {
-                Data.CurrentScene = Data.Scenes.Settings;
             }
             camera.Update(gameTime);
             selectedTile = Tile.PixelToIsometric(Mouse.GetState().Position.ToVector2(), camera);
