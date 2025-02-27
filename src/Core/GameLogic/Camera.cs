@@ -12,7 +12,7 @@ namespace cr_mono.Core.GameMath
 
         public Camera() {
             this.Position = new Vector2(
-                Data.NativeWidth / 2 - (zoomLevels[zoomIndex] / 2), Data.NativeHeight / 3);
+                Data.NativeWidth / 2 - (zoomLevels[zoomIndex] / 2), Data.NativeHeight / 2);
         }
 
         public void Update(GameTime gameTime) {

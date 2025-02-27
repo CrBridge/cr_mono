@@ -14,13 +14,12 @@ namespace cr_mono.Core.GameMath
             int y = (int)itemKey.Y - layer;
 
             return new Rectangle(
-                (int)((x * 0.5 * zoom) + (y * -0.5 * zoom) + camera.Position.X),
-                (int)((x * 0.25 * zoom) + (y * 0.25 * zoom) + camera.Position.Y),
+                (int)Math.Round((x * 0.5 * zoom) + (y * -0.5 * zoom) + camera.Position.X),
+                (int)Math.Round((x * 0.25 * zoom) + (y * 0.25 * zoom) + camera.Position.Y),
                 zoom, zoom);
         }
 
         internal static Vector2 PixelToIsometric(Vector2 mousePos, Camera camera) {
-            // for now, tile is size 32, may have zoom levels (enum) later.
             int screenWidth = Data.IsFullScreen ?
                 GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width : Data.ScreenWidth;
             mousePos = mousePos /

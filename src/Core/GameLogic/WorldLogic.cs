@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace cr_mono.Core.GameMath
 {
-    internal class MapGenerator
+    internal class WorldLogic
     {
-        internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) DiamondLevel(
+        internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) GenerateDiamondMap(
             int size,
             Random rng)
         {
@@ -38,7 +38,7 @@ namespace cr_mono.Core.GameMath
             return (baseLayer, topLayer);
         }
 
-        internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) JaggedLevel(
+        internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) GenerateJaggedMap(
             int size, 
             Random rng)
         {
@@ -129,6 +129,19 @@ namespace cr_mono.Core.GameMath
             }
 
             return navMap;
+        }
+
+        internal static Vector2 GetRandomMapPos(
+            Dictionary<Vector2, bool> navMap,
+            Random rng) {
+            List<Vector2> keys = navMap
+                .Where(kvp => kvp.Value)
+                .Select(kvp => kvp.Key)
+                .ToList();
+
+            Vector2 position = keys[rng.Next(keys.Count)];
+
+            return position;
         }
     }
 }

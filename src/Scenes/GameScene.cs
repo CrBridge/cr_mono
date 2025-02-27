@@ -6,14 +6,19 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using cr_mono.Managers;
+using cr_mono.Core.GameLogic;
 
 namespace cr_mono.Scenes
 {
     internal class GameScene : Component
     {
-        Texture2D tileSetTexture;
+        private Texture2D tileSetTexture, unitsTexture;
+
+        private ArmyPlayer player;
 
         private Dictionary<Vector2, int> baseLayer, topLayer;
+        // will be used when units are a thing
         private Dictionary<Vector2, bool> navMap;
         private List<Rectangle> textureStore;
 
@@ -22,18 +27,25 @@ namespace cr_mono.Scenes
         // TODO: use worldCentre to lock cameraPosition when zoom out is max
         private Vector2 worldCentre;
 
+        int visibleTiles;
+
         internal override void LoadContent(ContentManager content)
         {
-            Data.RNG = new Random(3);
-            camera = new Camera();
-            (baseLayer, topLayer) = MapGenerator.JaggedLevel(50, Data.RNG);
-            navMap = MapGenerator.GenerateNavMap(baseLayer, topLayer);
+            tileSetTexture = content.Load<Texture2D>("Textures/tileset");
+            unitsTexture = content.Load<Texture2D>("Textures/units");
+
+            Data.RNG = new Random(2);
+            (baseLayer, topLayer) = WorldLogic.GenerateJaggedMap(50, Data.RNG);
+            navMap = WorldLogic.GenerateNavMap(baseLayer, topLayer);
             textureStore = new() { 
                 new Rectangle(0, 0, 32, 32),
                 new Rectangle(32, 0, 32, 32),
                 new Rectangle(64, 0, 32, 32)
             };
-            tileSetTexture = content.Load<Texture2D>("Textures/tileset");
+            player = new ArmyPlayer(navMap, Data.RNG, unitsTexture);
+            camera = new Camera();
+
+            visibleTiles = 0;
         }
 
         internal override void Update(GameTime gameTime)
@@ -51,8 +63,17 @@ namespace cr_mono.Scenes
         {
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
+            visibleTiles = 0;
             RenderLayer(spriteBatch, baseLayer, 0);
             RenderLayer(spriteBatch, topLayer, 1);
+
+            player.RenderToMap(camera, selectedTile, spriteBatch);
+
+            spriteBatch.DrawString(
+                ResourceManager.FontRegular, 
+                $"Tiles Drawn: {visibleTiles}",
+                Vector2.Zero,
+                Color.White);
            
             spriteBatch.End();
         }
@@ -62,15 +83,23 @@ namespace cr_mono.Scenes
             Dictionary<Vector2, int> layer, 
             int layerNumber)
         {
+            Rectangle bounds = new Rectangle(0, 0, Data.NativeWidth, Data.NativeHeight);
+
             foreach (var item in layer) {
                 Rectangle dst = Tile.IsometricToPixel(item.Key, camera, layerNumber);
                 Rectangle src = textureStore[item.Value - 1];
 
-                if (item.Key == selectedTile && camera.zoomIndex > 0) {
-                    spritebatch.Draw(tileSetTexture, dst, src, Color.Silver);
-                }
-                else {
-                    spritebatch.Draw(tileSetTexture, dst, src, Color.White);
+
+                if (dst.Intersects(bounds)) {
+                    if (item.Key == selectedTile && camera.zoomIndex > 0)
+                    {
+                        spritebatch.Draw(tileSetTexture, dst, src, Color.Silver);
+                    }
+                    else
+                    {
+                        spritebatch.Draw(tileSetTexture, dst, src, Color.White);
+                    }
+                    visibleTiles++;
                 }
             }
         }
