@@ -29,6 +29,7 @@ namespace cr_mono.Scenes
         int visibleTiles;
 
         private List<Vector2> pathfindingTiles;
+        private WorldTime worldTime;
 
         internal override void LoadContent(ContentManager content)
         {
@@ -49,6 +50,8 @@ namespace cr_mono.Scenes
             visibleTiles = 0;
 
             pathfindingTiles = new List<Vector2>();
+
+            worldTime = new WorldTime();
         }
 
         internal override void Update(GameTime gameTime)
@@ -68,6 +71,8 @@ namespace cr_mono.Scenes
                 //player.MovePlayer(selectedTile, navMap);
                 pathfindingTiles = Pathfinding.FindPath(player.position, selectedTile, navMap);
             }
+
+            worldTime.Update(gameTime);
         }
 
         internal override void Draw(SpriteBatch spriteBatch)
@@ -81,11 +86,17 @@ namespace cr_mono.Scenes
 
 
             spriteBatch.DrawString(
-                ResourceManager.FontRegular, 
+                ResourceManager.FontSmall, 
                 $"Tiles Drawn: {visibleTiles}",
                 Vector2.Zero,
                 Color.White);
-           
+
+            spriteBatch.DrawString(
+                ResourceManager.FontSmall,
+                $"Minute: {worldTime.minutes} Hour: {worldTime.hours} Day: {worldTime.days}",
+                new Vector2(0, 14),
+                Color.White);
+
             spriteBatch.End();
         }
 

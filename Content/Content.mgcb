@@ -13,12 +13,19 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Fonts/silkscreen_regular.spritefont
+#begin Fonts/font_regular.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Fonts/silkscreen_regular.spritefont
+/build:Fonts/font_regular.spritefont
+
+#begin Fonts/font_small.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/font_small.spritefont
 
 #begin Shaders/ShaderTest.fx
 /importer:EffectImporter
