@@ -18,18 +18,18 @@ namespace cr_mono.Core.GameMath
         public void Update(GameTime gameTime) {
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                Position.Y += zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.Y += 2 * zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.A)) {
-                Position.X += zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.X += 2 * zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                Position.Y -= zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.Y -= 2 * zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                Position.X -= zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.X -= 2 * zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Data.currentKeyboardState.IsKeyDown(Keys.I) && !Data.previousKeyboardState.IsKeyDown(Keys.I))
             {
@@ -53,6 +53,7 @@ namespace cr_mono.Core.GameMath
             zoomIndex = newZoom;
 
             Position = centre - worldCentre * zoomLevels[zoomIndex];
+            //Position = new Vector2(235.0f, 45.0f); //Rough centre position value
         }
     }
 }

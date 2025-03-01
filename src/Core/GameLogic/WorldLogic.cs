@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace cr_mono.Core.GameMath
 {
-    internal class WorldLogic
+    internal static class WorldLogic
     {
         internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) GenerateDiamondMap(
             int size,

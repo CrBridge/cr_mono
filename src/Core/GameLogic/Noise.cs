@@ -7,7 +7,7 @@ namespace cr_mono.Core.GameMath
 
     // source: http://devmag.org.za/2009/04/25/perlin-noise/
 
-    internal class Noise
+    internal static class Noise
     {
         private static float Interpolate(float x, float y, float alpha) {
             return x * (1 - alpha) + alpha * y;

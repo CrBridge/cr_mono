@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace cr_mono.Core.GameMath
 {
-    internal class Tile
+    internal static class Tile
     {
         // basic class for helper functions for now
         // This class may also include the enum for tile types (air, solid, half, stairs etc.)
