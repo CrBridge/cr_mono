@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using cr_mono.Core.GameMath;
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,7 +14,7 @@ namespace cr_mono.Core.GameLogic
 
         internal ArmyPlayer(
             Dictionary<Vector2, bool> navMap, 
-            Random rng,
+            RNG rng,
             Texture2D texture) 
         {
             this.texture = texture;

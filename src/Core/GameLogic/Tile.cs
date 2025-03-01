@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace cr_mono.Core.GameMath
+namespace cr_mono.Core.GameLogic
 {
     internal static class Tile
     {

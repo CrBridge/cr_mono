@@ -4,13 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace cr_mono.Core.GameMath
+namespace cr_mono.Core.GameLogic
 {
     internal static class WorldLogic
     {
         internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) GenerateDiamondMap(
             int size,
-            Random rng)
+            RNG rng)
         {
             Dictionary<Vector2, int> baseLayer = [];
             Dictionary<Vector2, int> topLayer = [];
@@ -40,7 +40,7 @@ namespace cr_mono.Core.GameMath
 
         internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) GenerateJaggedMap(
             int size, 
-            Random rng)
+            RNG rng)
         {
             Dictionary<Vector2, int> baseLayer = new();
             Dictionary<Vector2, int> topLayer = new();
@@ -133,13 +133,13 @@ namespace cr_mono.Core.GameMath
 
         internal static Vector2 GetRandomMapPos(
             Dictionary<Vector2, bool> navMap,
-            Random rng) {
+            RNG rng) {
             List<Vector2> keys = navMap
                 .Where(kvp => kvp.Value)
                 .Select(kvp => kvp.Key)
                 .ToList();
 
-            Vector2 position = keys[rng.Next(keys.Count)];
+            Vector2 position = keys[rng.Next(0, keys.Count)];
 
             return position;
         }

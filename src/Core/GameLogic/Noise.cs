@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace cr_mono.Core.GameMath
+﻿namespace cr_mono.Core.GameLogic
 {
     // class for generating some basic noise i can use to sample
     // the isometric maps to place features such as water, elevation etc.
@@ -23,7 +21,8 @@ namespace cr_mono.Core.GameMath
             return image;
         }
 
-        private static float[][] GenerateWhiteNoise(int width, int height, Random rng) { 
+        private static float[][] GenerateWhiteNoise(int width, int height, RNG rng)
+        {
             float[][] noise = GetEmptyArray<float>(width, height);
 
             for (int i = 0; i < width; i++) {
@@ -73,7 +72,7 @@ namespace cr_mono.Core.GameMath
         }
 
         internal static float[][] GeneratePerlinNoise(
-            Random rng, int width, int height, int octaveCount) {
+            RNG rng, int width, int height, int octaveCount) {
             float[][] baseNoise = GenerateWhiteNoise(width, height, rng);
             float[][][] smoothNoise = new float[octaveCount][][];
             

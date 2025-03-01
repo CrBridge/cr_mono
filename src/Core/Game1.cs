@@ -41,8 +41,8 @@ namespace cr_mono.Core
 
         protected override void Update(GameTime gameTime)
         {
-            Data.previousKeyboardState = Data.currentKeyboardState;
-            Data.currentKeyboardState = Keyboard.GetState();
+            Data.PreviousKeyboardState = Data.CurrentKeyboardState;
+            Data.CurrentKeyboardState = Keyboard.GetState();
 
             if (Data.Exit == true) {
                 Exit();

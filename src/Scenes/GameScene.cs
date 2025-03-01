@@ -1,5 +1,4 @@
 ﻿using cr_mono.Core;
-using cr_mono.Core.GameMath;
 using cr_mono.Managers;
 using cr_mono.Core.GameLogic;
 using Microsoft.Xna.Framework;
@@ -36,7 +35,7 @@ namespace cr_mono.Scenes
             tileSetTexture = content.Load<Texture2D>("Textures/tileset");
             unitsTexture = content.Load<Texture2D>("Textures/units");
 
-            Data.RNG = new Random(3);
+            Data.RNG = new RNG(6);
             (baseLayer, topLayer) = WorldLogic.GenerateJaggedMap(50, Data.RNG);
             navMap = WorldLogic.GenerateNavMap(baseLayer, topLayer);
             textureStore = new() { 
@@ -56,8 +55,8 @@ namespace cr_mono.Scenes
 
         internal override void Update(GameTime gameTime)
         {
-            if (Data.currentKeyboardState.IsKeyDown(Keys.Tab) && 
-                !Data.previousKeyboardState.IsKeyDown(Keys.Tab))
+            if (Data.CurrentKeyboardState.IsKeyDown(Keys.Tab) && 
+                !Data.PreviousKeyboardState.IsKeyDown(Keys.Tab))
             {
                 Data.CurrentScene = Data.Scenes.Menu;
             }

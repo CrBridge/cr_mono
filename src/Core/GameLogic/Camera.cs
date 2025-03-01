@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace cr_mono.Core.GameMath
+namespace cr_mono.Core.GameLogic
 {
     public class Camera
     {
@@ -31,13 +31,13 @@ namespace cr_mono.Core.GameMath
             {
                 Position.X -= 2 * zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
-            if (Data.currentKeyboardState.IsKeyDown(Keys.I) && !Data.previousKeyboardState.IsKeyDown(Keys.I))
+            if (Data.CurrentKeyboardState.IsKeyDown(Keys.I) && !Data.PreviousKeyboardState.IsKeyDown(Keys.I))
             {
                 if (zoomIndex < zoomLevels.Length - 1) {
                     AdjustZoom(zoomIndex + 1);
                 }
             }
-            if (Data.currentKeyboardState.IsKeyDown(Keys.O) && !Data.previousKeyboardState.IsKeyDown(Keys.O))
+            if (Data.CurrentKeyboardState.IsKeyDown(Keys.O) && !Data.PreviousKeyboardState.IsKeyDown(Keys.O))
             {
                 if (zoomIndex > 0) {
                     AdjustZoom(zoomIndex - 1);
