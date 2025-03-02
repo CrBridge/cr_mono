@@ -78,27 +78,35 @@ namespace cr_mono.Core.GameLogic
 
             int minX = (int)baseLayer.Keys.Min(tile => tile.X);
             int minY = (int)baseLayer.Keys.Min(tile => tile.Y);
-            int maxX = (int)baseLayer.Keys.Max(tile => tile.X);
-            int maxY = (int)baseLayer.Keys.Max(tile => tile.Y);
-
-            int centreX = (minX + maxX) / 2;
-            int centreY = (minY + maxY) / 2;
-            Vector2 centre = new Vector2(centreX, centreY);
 
             int noiseSize = size * 2 - 1;
-            float[][] noise = Noise.GeneratePerlinNoise(rng, noiseSize, noiseSize, 6);
+            // noisemap for ocean and mountain generation
+            float[][] heightNoise = Noise.GeneratePerlinNoise(rng, noiseSize, noiseSize, 6);
             foreach (var tile in baseLayer.Keys.ToList())
             {
                 int noiseX = (int)tile.X - minX;
                 int noiseY = (int)tile.Y - minY;
 
-                if (noise[noiseX][noiseY] >= 0.5)
+                if (heightNoise[noiseX][noiseY] >= 0.6)
                 {
                     baseLayer[tile] = 2;
                 }
-                if (noise[noiseX][noiseY] <= 0.3)
+                if (heightNoise[noiseX][noiseY] <= 0.3)
                 {
                     topLayer[tile] = 3;
+                }
+            }
+
+            // noisemap for forest generation, lower octaves as it can look a little more random
+            float[][] treeNoise = Noise.GeneratePerlinNoise(rng, noiseSize, noiseSize, 4);
+            foreach (var tile in baseLayer.Keys.ToList())
+            {
+                int noiseX = (int)tile.X - minX;
+                int noiseY = (int)tile.Y - minY;
+
+                if (treeNoise[noiseX][noiseY] <= 0.4 && baseLayer[tile] != 2 && !topLayer.ContainsKey(tile))
+                {
+                    topLayer[tile] = 4;
                 }
             }
 

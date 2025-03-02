@@ -14,7 +14,7 @@ namespace cr_mono.Scenes
     {
         private Texture2D tileSetTexture, unitsTexture;
 
-        private ArmyPlayer player;
+        //private ArmyPlayer player;
 
         private Dictionary<Vector2, int> baseLayer, topLayer;
         private Dictionary<Vector2, bool> navMap;
@@ -23,11 +23,12 @@ namespace cr_mono.Scenes
         private Camera camera;
         private Vector2 selectedTile;
         // TODO: use worldCentre to lock cameraPosition when zoom out is max
-        private Vector2 worldCentre;
+        //private Vector2 worldCentre;
 
+        // var to debug number of draw calls
         int visibleTiles;
 
-        private List<Vector2> pathfindingTiles;
+        //private List<Vector2> pathfindingTiles;
         private WorldTime worldTime;
 
         internal override void LoadContent(ContentManager content)
@@ -41,14 +42,15 @@ namespace cr_mono.Scenes
             textureStore = new() { 
                 new Rectangle(0, 0, 32, 32),
                 new Rectangle(32, 0, 32, 32),
-                new Rectangle(64, 0, 32, 32)
+                new Rectangle(64, 0, 32, 32),
+                new Rectangle(96, 0, 32, 32)
             };
-            player = new ArmyPlayer(navMap, Data.RNG, unitsTexture);
+            //player = new ArmyPlayer(navMap, Data.RNG, unitsTexture);
             camera = new Camera();
 
             visibleTiles = 0;
 
-            pathfindingTiles = new List<Vector2>();
+            //pathfindingTiles = new List<Vector2>();
 
             worldTime = new WorldTime();
         }
@@ -65,10 +67,19 @@ namespace cr_mono.Scenes
             MouseState ms = Mouse.GetState();
             selectedTile = Tile.PixelToIsometric(ms.Position.ToVector2(), camera);
             //if (ms.LeftButton == ButtonState.Pressed && camera.zoomIndex > 0) {
-            if (ms.LeftButton == ButtonState.Pressed && camera.zoomIndex > 0 && navMap.ContainsKey(selectedTile))
-            {
+            //if (ms.LeftButton == ButtonState.Pressed && camera.zoomIndex > 0 && navMap.ContainsKey(selectedTile))
+            //{
                 //player.MovePlayer(selectedTile, navMap);
-                pathfindingTiles = Pathfinding.FindPath(player.position, selectedTile, navMap);
+                //pathfindingTiles = Pathfinding.FindPath(player.position, selectedTile, navMap);
+            //}
+
+            if (Data.CurrentKeyboardState.IsKeyDown(Keys.Space) &&
+                !Data.PreviousKeyboardState.IsKeyDown(Keys.Space))
+            {
+                //refresh world to test world gen
+                (baseLayer, topLayer) = WorldLogic.GenerateJaggedMap(50, Data.RNG);
+                navMap = WorldLogic.GenerateNavMap(baseLayer, topLayer);
+
             }
 
             worldTime.Update(gameTime);
@@ -80,7 +91,7 @@ namespace cr_mono.Scenes
 
             visibleTiles = 0;
             RenderLayer(spriteBatch, baseLayer, 0);
-            player.RenderToMap(camera, selectedTile, spriteBatch);
+            //player.RenderToMap(camera, selectedTile, spriteBatch);
             RenderLayer(spriteBatch, topLayer, 1);
 
 
@@ -111,8 +122,8 @@ namespace cr_mono.Scenes
                 Rectangle src = textureStore[item.Value - 1];
 
                 if (dst.Intersects(bounds)) {
-                    //if (item.Key == selectedTile && camera.zoomIndex > 0)
-                    if (pathfindingTiles != null && pathfindingTiles.Contains(item.Key) && camera.zoomIndex > 0)
+                    if (item.Key == selectedTile && camera.zoomIndex > 0)
+                    //if (pathfindingTiles != null && pathfindingTiles.Contains(item.Key) && camera.zoomIndex > 0)
                     {
                         spritebatch.Draw(tileSetTexture, dst, src, Color.Silver);
                     }
