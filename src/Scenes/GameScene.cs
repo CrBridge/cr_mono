@@ -49,7 +49,7 @@ namespace cr_mono.Scenes
             camera = new Camera();
 
             visibleTiles = 0;
-
+            
             //pathfindingTiles = new List<Vector2>();
 
             worldTime = new WorldTime();

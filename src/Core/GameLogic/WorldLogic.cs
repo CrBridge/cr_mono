@@ -97,8 +97,11 @@ namespace cr_mono.Core.GameLogic
                 }
             }
 
+            RefineBaseLayer(baseLayer, 10, 1, 2);
+            RefineBaseLayer(baseLayer, 10, 2, 1);
+
             // noisemap for forest generation, lower octaves as it can look a little more random
-            float[][] treeNoise = Noise.GeneratePerlinNoise(rng, noiseSize, noiseSize, 4);
+            float[][] treeNoise = Noise.GeneratePerlinNoise(rng, noiseSize, noiseSize, 6);
             foreach (var tile in baseLayer.Keys.ToList())
             {
                 int noiseX = (int)tile.X - minX;
@@ -128,6 +131,8 @@ namespace cr_mono.Core.GameLogic
 
             foreach (var tile in baseLayer) {
                 if (tile.Value == 1 && !topLayer.ContainsKey(tile.Key))
+                    // change navMap so only mountains are not traversable instead of any topLayer tile
+                //if (tile.Value == 1 && !(topLayer.TryGetValue(tile.Key, out int value) && value == 3))
                 {
                     navMap[tile.Key] = true;
                 }
@@ -150,6 +155,80 @@ namespace cr_mono.Core.GameLogic
             Vector2 position = keys[rng.Next(0, keys.Count)];
 
             return position;
+        }
+
+        // given a position on the map, returns a list
+        // of all surrounding tiles of the same value
+        internal static List<Vector2> FloodFillTiles(
+            Dictionary<Vector2, int> layer,
+            Vector2 startPosition,
+            HashSet<Vector2> visited)
+        {
+            int startValue = layer[startPosition];
+            List<Vector2> tiles = new();
+
+            if (!layer.ContainsKey(startPosition))
+            {
+                return tiles;
+            }
+
+            Queue<Vector2> queue = new();
+            queue.Enqueue(startPosition);
+            tiles.Add(startPosition);
+            visited.Add(startPosition);
+
+            Vector2[] directions = {
+                new Vector2(1, 0), new Vector2(-1, 0),
+                new Vector2(0, 1), new Vector2(0, -1)
+            };
+
+            while (queue.Count > 0)
+            {
+                Vector2 current = queue.Dequeue();
+
+                foreach (var direction in directions)
+                {
+                    Vector2 neighbor = current + direction;
+
+                    if (layer.TryGetValue(neighbor, out int value) && value == startValue &&
+                        !visited.Contains(neighbor))
+                    {
+                        queue.Enqueue(neighbor);
+                        visited.Add(neighbor);
+                        tiles.Add(neighbor);
+                    }
+                }
+            }
+
+            return tiles;
+        }
+
+        // function to iron out noisy sections of the base layer
+        // e.g. small, enclosed areas of land or water
+        // effectively removes small islands and lakes that would mostly cause issue
+        internal static void RefineBaseLayer(
+            Dictionary<Vector2, int> layer,
+            int threshold,
+            int target,
+            int replacement) 
+        {
+            HashSet<Vector2> visited = new();
+
+            foreach (var tile in layer.Keys.ToList())
+            {
+                if (!visited.Contains(tile) && layer[tile] == target)
+                {
+                    List<Vector2> floodTiles = FloodFillTiles(layer, tile, visited);
+
+                    if (floodTiles.Count < threshold)
+                    {
+                        foreach (var pos in floodTiles)
+                        {
+                            layer[pos] = replacement;
+                        }
+                    }
+                }
+            }
         }
     }
 }
