@@ -48,6 +48,18 @@ namespace cr_mono.Core.GameLogic
             Vector2 end, 
             Dictionary<Vector2, bool> navMap) 
         {
+            var accessibleTiles = WorldLogic.FloodFillTiles(
+                navMap.ToDictionary(kvp => kvp.Key, kvp => kvp.Value ? 1 : 0),
+                start,
+                new HashSet<Vector2>());
+            var reducedNavMap = accessibleTiles.ToDictionary(tile => tile, tile => navMap[tile]);
+            navMap = reducedNavMap;
+
+            if (!navMap.ContainsKey(end))
+            {
+                return null;
+            }
+
             var openList = new PriorityQueue<Node, float>();
             var closedList = new HashSet<Node>();
 

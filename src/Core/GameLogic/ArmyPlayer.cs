@@ -12,6 +12,9 @@ namespace cr_mono.Core.GameLogic
         private int armySize;
         internal Vector2 position;
 
+        private Queue<Vector2> path;
+        private Vector2? targetTile;
+
         internal ArmyPlayer(
             Dictionary<Vector2, bool> navMap, 
             RNG rng,
@@ -21,6 +24,9 @@ namespace cr_mono.Core.GameLogic
             this.textureSrc = new Rectangle(0, 0, 32, 32);
             this.armySize = 1;
             this.position = WorldLogic.GetRandomMapPos(navMap, rng);
+
+            this.path = new Queue<Vector2>();
+            this.targetTile = null;
         }
 
         internal void RenderToMap(
@@ -38,12 +44,18 @@ namespace cr_mono.Core.GameLogic
             }
         }
 
-        internal void MovePlayer(
-            Vector2 selectedTile,
-            Dictionary<Vector2, bool> navMap)
+        internal void SetPath(List<Vector2> newPath)
         {
-            if (navMap.TryGetValue(selectedTile, out bool value) && value) {
-                position = selectedTile;
+            path = new Queue<Vector2>(newPath);
+            targetTile = path.Count > 0 ? path.Dequeue() : null;
+        }
+
+        internal void UpdatePosition() 
+        {
+            if (targetTile.HasValue) 
+            {
+                position = targetTile.Value;
+                targetTile = path.Count > 0 ? path.Dequeue() : null;
             }
         }
     }

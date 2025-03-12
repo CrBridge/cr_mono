@@ -101,13 +101,13 @@ namespace cr_mono.Core.GameLogic
             RefineBaseLayer(baseLayer, 10, 2, 1);
 
             // noisemap for forest generation, lower octaves as it can look a little more random
-            float[][] treeNoise = Noise.GeneratePerlinNoise(rng, noiseSize, noiseSize, 6);
+            float[][] treeNoise = Noise.GeneratePerlinNoise(rng, noiseSize, noiseSize, 4);
             foreach (var tile in baseLayer.Keys.ToList())
             {
                 int noiseX = (int)tile.X - minX;
                 int noiseY = (int)tile.Y - minY;
 
-                if (treeNoise[noiseX][noiseY] <= 0.4 && baseLayer[tile] != 2 && !topLayer.ContainsKey(tile))
+                if (treeNoise[noiseX][noiseY] <= 0.3 && baseLayer[tile] != 2 && !topLayer.ContainsKey(tile))
                 {
                     topLayer[tile] = 4;
                 }

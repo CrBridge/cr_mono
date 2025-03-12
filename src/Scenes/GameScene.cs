@@ -14,7 +14,7 @@ namespace cr_mono.Scenes
     {
         private Texture2D tileSetTexture, unitsTexture;
 
-        //private ArmyPlayer player;
+        private ArmyPlayer player;
 
         private Dictionary<Vector2, int> baseLayer, topLayer;
         private Dictionary<Vector2, bool> navMap;
@@ -30,6 +30,7 @@ namespace cr_mono.Scenes
 
         //private List<Vector2> pathfindingTiles;
         private WorldTime worldTime;
+        private int lastMoveMinute;
 
         internal override void LoadContent(ContentManager content)
         {
@@ -45,7 +46,7 @@ namespace cr_mono.Scenes
                 new Rectangle(64, 0, 32, 32),
                 new Rectangle(96, 0, 32, 32)
             };
-            //player = new ArmyPlayer(navMap, Data.RNG, unitsTexture);
+            player = new ArmyPlayer(navMap, Data.RNG, unitsTexture);
             camera = new Camera();
 
             visibleTiles = 0;
@@ -53,6 +54,7 @@ namespace cr_mono.Scenes
             //pathfindingTiles = new List<Vector2>();
 
             worldTime = new WorldTime();
+            lastMoveMinute = worldTime.minutes;
         }
 
         internal override void Update(GameTime gameTime)
@@ -66,23 +68,24 @@ namespace cr_mono.Scenes
 
             MouseState ms = Mouse.GetState();
             selectedTile = Tile.PixelToIsometric(ms.Position.ToVector2(), camera);
-            //if (ms.LeftButton == ButtonState.Pressed && camera.zoomIndex > 0) {
-            //if (ms.LeftButton == ButtonState.Pressed && camera.zoomIndex > 0 && navMap.ContainsKey(selectedTile))
-            //{
-                //player.MovePlayer(selectedTile, navMap);
-                //pathfindingTiles = Pathfinding.FindPath(player.position, selectedTile, navMap);
-            //}
-
-            if (Data.CurrentKeyboardState.IsKeyDown(Keys.Space) &&
-                !Data.PreviousKeyboardState.IsKeyDown(Keys.Space))
+            if (ms.LeftButton == ButtonState.Pressed && navMap.ContainsKey(selectedTile))
             {
-                //refresh world to test world gen
-                (baseLayer, topLayer) = WorldLogic.GenerateJaggedMap(50, Data.RNG);
-                navMap = WorldLogic.GenerateNavMap(baseLayer, topLayer);
-
+                List<Vector2> path = Pathfinding.FindPath(player.position, selectedTile, navMap);
+                if (path != null)
+                {
+                    player.SetPath(path);
+                }
             }
 
             worldTime.Update(gameTime);
+            // update entities every 10 minutes
+            int timeDifference = (worldTime.minutes - lastMoveMinute + 60) % 60;
+            //if (worldTime.minutes % 10 == 0)
+            if (timeDifference >= 5)
+            {
+                player.UpdatePosition();
+                lastMoveMinute = worldTime.minutes;
+            }
         }
 
         internal override void Draw(SpriteBatch spriteBatch)
@@ -91,7 +94,7 @@ namespace cr_mono.Scenes
 
             visibleTiles = 0;
             RenderLayer(spriteBatch, baseLayer, 0);
-            //player.RenderToMap(camera, selectedTile, spriteBatch);
+            player.RenderToMap(camera, selectedTile, spriteBatch);
             RenderLayer(spriteBatch, topLayer, 1);
 
 
