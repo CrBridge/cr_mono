@@ -28,7 +28,6 @@ namespace cr_mono.Scenes
         // var to debug number of draw calls
         int visibleTiles;
 
-        //private List<Vector2> pathfindingTiles;
         private WorldTime worldTime;
         private int lastMoveMinute;
 
@@ -40,18 +39,18 @@ namespace cr_mono.Scenes
             Data.RNG = new RNG(6);
             (baseLayer, topLayer) = WorldLogic.GenerateJaggedMap(50, Data.RNG);
             navMap = WorldLogic.GenerateNavMap(baseLayer, topLayer);
+            WorldLogic.AddStructures(navMap, topLayer, Data.RNG, 15);
             textureStore = new() { 
                 new Rectangle(0, 0, 32, 32),
                 new Rectangle(32, 0, 32, 32),
                 new Rectangle(64, 0, 32, 32),
-                new Rectangle(96, 0, 32, 32)
+                new Rectangle(96, 0, 32, 32),
+                new Rectangle(128, 0, 32, 32)
             };
             player = new ArmyPlayer(navMap, Data.RNG, unitsTexture);
             camera = new Camera();
 
             visibleTiles = 0;
-            
-            //pathfindingTiles = new List<Vector2>();
 
             worldTime = new WorldTime();
             lastMoveMinute = worldTime.minutes;
@@ -78,9 +77,8 @@ namespace cr_mono.Scenes
             }
 
             worldTime.Update(gameTime);
-            // update entities every 10 minutes
+            // update entities every x minutes
             int timeDifference = (worldTime.minutes - lastMoveMinute + 60) % 60;
-            //if (worldTime.minutes % 10 == 0)
             if (timeDifference >= 5)
             {
                 player.UpdatePosition();
@@ -125,14 +123,21 @@ namespace cr_mono.Scenes
                 Rectangle src = textureStore[item.Value - 1];
 
                 if (dst.Intersects(bounds)) {
-                    if (item.Key == selectedTile && camera.zoomIndex > 0)
-                    //if (pathfindingTiles != null && pathfindingTiles.Contains(item.Key) && camera.zoomIndex > 0)
+                    // TODO! only do this for the top layer. its proccing on base too and making it look strange
+                    if (layerNumber != 0 && item.Key == player.position)
                     {
-                        spritebatch.Draw(tileSetTexture, dst, src, Color.Silver);
+                        //spritebatch.Draw(tileSetTexture, dst, src, new Color(Color.White, 0.8f));
+                        spritebatch.Draw(tileSetTexture, dst, src, new Color(worldTime.skyColor, 0.8f));
+                    }
+                    else if (item.Key == selectedTile && camera.zoomIndex > 0)
+                    {
+                        //spritebatch.Draw(tileSetTexture, dst, src, Color.Silver);
+                        spritebatch.Draw(tileSetTexture, dst, src, Color.Lerp(worldTime.skyColor, Color.Silver, 0.5f));
                     }
                     else
                     {
-                        spritebatch.Draw(tileSetTexture, dst, src, Color.White);
+                        //spritebatch.Draw(tileSetTexture, dst, src, Color.White);
+                        spritebatch.Draw(tileSetTexture, dst, src, worldTime.skyColor);
                     }
                     visibleTiles++;
                 }

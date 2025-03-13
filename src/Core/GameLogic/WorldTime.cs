@@ -13,6 +13,8 @@ namespace cr_mono.Core.GameLogic
         private enum TimeSpeed { Slow, Standard, Fast }
         private TimeSpeed speed = TimeSpeed.Fast;
 
+        internal Color skyColor;
+
         internal WorldTime() 
         {
             this.realTime = 0.0f;
@@ -21,6 +23,8 @@ namespace cr_mono.Core.GameLogic
             this.days = 1;
             this.months = 1;
             this.years = 1;
+
+            this.skyColor = Color.White;
         }
 
         internal void Update(GameTime gameTime) 
@@ -33,6 +37,7 @@ namespace cr_mono.Core.GameLogic
             float rem = realTime - 1000.0f;
             realTime = rem;
             ProcessTime();
+            UpdateSkyColor();
         }
 
         internal void ProcessTime() 
@@ -85,15 +90,39 @@ namespace cr_mono.Core.GameLogic
             switch (speed) 
             {
                 case TimeSpeed.Slow:
-                    return 0.5f;
-                case TimeSpeed.Standard:
                     return 1.0f;
+                case TimeSpeed.Standard:
+                    return 3.0f;
                 case TimeSpeed.Fast:
-                    return 2.0f;
+                    return 15.0f;
                 default:
                     speed = TimeSpeed.Standard;
                     return 1.0f;
             }
         }
+
+        internal void UpdateSkyColor() 
+        {
+            Color midnight = Color.DarkSlateBlue;
+            Color noon = Color.White;
+            Color dawnDusk = Color.OrangeRed;
+
+            if (hours < 6)
+            {
+                skyColor = Color.Lerp(midnight, dawnDusk, (hours + (minutes / 60f)) / 6);
+            }
+            else if (hours < 12) 
+            {
+                skyColor = Color.Lerp(dawnDusk, noon, ((hours - 6) + (minutes / 60f)) / 6);
+            }
+            else if (hours < 18) 
+            {
+                skyColor = Color.Lerp(noon, dawnDusk, ((hours - 12) + (minutes / 60f)) / 6);
+            }
+            else 
+            {
+                skyColor = Color.Lerp(dawnDusk, midnight, ((hours - 18) + (minutes / 60f)) / 6);
+            }
+        } 
     }
 }

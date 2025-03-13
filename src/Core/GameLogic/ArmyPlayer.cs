@@ -9,7 +9,6 @@ namespace cr_mono.Core.GameLogic
     {
         private Texture2D texture;
         private Rectangle textureSrc;
-        private int armySize;
         internal Vector2 position;
 
         private Queue<Vector2> path;
@@ -22,7 +21,6 @@ namespace cr_mono.Core.GameLogic
         {
             this.texture = texture;
             this.textureSrc = new Rectangle(0, 0, 32, 32);
-            this.armySize = 1;
             this.position = WorldLogic.GetRandomMapPos(navMap, rng);
 
             this.path = new Queue<Vector2>();
