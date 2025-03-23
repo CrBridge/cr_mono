@@ -5,28 +5,23 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
+using System;
 
 namespace cr_mono.Scenes
 {
     internal class GameScene : Component
     {
+        internal event EventHandler MenuRequested;
+        //internal event EventHandler SettingsRequested;
+
         private Texture2D tileSetTexture, unitsTexture;
 
         private ArmyPlayer player;
-
-        private Dictionary<Vector2, int> baseLayer, topLayer;
-        private Dictionary<Vector2, bool> navMap;
-        private List<Rectangle> textureStore;
+        private WorldMap world;
 
         private Camera camera;
         private Vector2 selectedTile;
-        // TODO: use worldCentre to lock cameraPosition when zoom out is max
-        //private Vector2 worldCentre;
-
-        // var to debug number of draw calls
-        int visibleTiles;
 
         private WorldTime worldTime;
         private int lastMoveMinute;
@@ -37,20 +32,9 @@ namespace cr_mono.Scenes
             unitsTexture = content.Load<Texture2D>("Textures/units");
 
             Data.RNG = new RNG(6);
-            (baseLayer, topLayer) = WorldLogic.GenerateJaggedMap(50, Data.RNG);
-            navMap = WorldLogic.GenerateNavMap(baseLayer, topLayer);
-            WorldLogic.AddStructures(navMap, topLayer, Data.RNG, 15);
-            textureStore = new() { 
-                new Rectangle(0, 0, 32, 32),
-                new Rectangle(32, 0, 32, 32),
-                new Rectangle(64, 0, 32, 32),
-                new Rectangle(96, 0, 32, 32),
-                new Rectangle(128, 0, 32, 32)
-            };
-            player = new ArmyPlayer(navMap, Data.RNG, unitsTexture);
+            world = new WorldMap(50, Data.RNG);
+            player = new ArmyPlayer(world.navMap, Data.RNG, unitsTexture);
             camera = new Camera();
-
-            visibleTiles = 0;
 
             worldTime = new WorldTime();
             lastMoveMinute = worldTime.minutes;
@@ -61,15 +45,16 @@ namespace cr_mono.Scenes
             if (Data.CurrentKeyboardState.IsKeyDown(Keys.Tab) && 
                 !Data.PreviousKeyboardState.IsKeyDown(Keys.Tab))
             {
-                Data.CurrentScene = Data.Scenes.Menu;
+                //Data.CurrentScene = Data.Scenes.Menu;
+                MenuRequested?.Invoke(this, EventArgs.Empty);
             }
             camera.Update(gameTime);
 
             MouseState ms = Mouse.GetState();
             selectedTile = Tile.PixelToIsometric(ms.Position.ToVector2(), camera);
-            if (ms.LeftButton == ButtonState.Pressed && navMap.ContainsKey(selectedTile))
+            if (ms.LeftButton == ButtonState.Pressed && world.navMap.ContainsKey(selectedTile))
             {
-                List<Vector2> path = Pathfinding.FindPath(player.position, selectedTile, navMap);
+                List<Vector2> path = Pathfinding.FindPath(player.position, selectedTile, world.navMap);
                 if (path != null)
                 {
                     player.SetPath(path);
@@ -81,7 +66,7 @@ namespace cr_mono.Scenes
             int timeDifference = (worldTime.minutes - lastMoveMinute + 60) % 60;
             if (timeDifference >= 5)
             {
-                player.UpdatePosition();
+                player.UpdatePosition(world.topLayer);
                 lastMoveMinute = worldTime.minutes;
             }
         }
@@ -90,22 +75,14 @@ namespace cr_mono.Scenes
         {
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            visibleTiles = 0;
-            RenderLayer(spriteBatch, baseLayer, 0);
+            RenderLayer(spriteBatch, world.baseLayer, 0);
             player.RenderToMap(camera, selectedTile, spriteBatch);
-            RenderLayer(spriteBatch, topLayer, 1);
-
-
-            spriteBatch.DrawString(
-                ResourceManager.FontSmall, 
-                $"Tiles Drawn: {visibleTiles}",
-                Vector2.Zero,
-                Color.White);
+            RenderLayer(spriteBatch, world.topLayer, 1);
 
             spriteBatch.DrawString(
                 ResourceManager.FontSmall,
                 $"Minute: {worldTime.minutes} Hour: {worldTime.hours} Day: {worldTime.days}",
-                new Vector2(0, 14),
+                new Vector2(0, 7),
                 Color.White);
 
             spriteBatch.End();
@@ -120,7 +97,7 @@ namespace cr_mono.Scenes
 
             foreach (var item in layer) {
                 Rectangle dst = Tile.IsometricToPixel(item.Key, camera, layerNumber);
-                Rectangle src = textureStore[item.Value - 1];
+                Rectangle src = world.textureStore[item.Value - 1];
 
                 if (dst.Intersects(bounds)) {
                     if (layerNumber != 0 && item.Key == player.position)
@@ -135,7 +112,6 @@ namespace cr_mono.Scenes
                     {
                         spritebatch.Draw(tileSetTexture, dst, src, worldTime.skyColor);
                     }
-                    visibleTiles++;
                 }
             }
         }

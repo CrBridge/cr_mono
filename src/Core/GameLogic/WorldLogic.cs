@@ -130,8 +130,6 @@ namespace cr_mono.Core.GameLogic
             Dictionary<Vector2, bool> navMap = new();
 
             foreach (var tile in baseLayer) {
-                //if (tile.Value == 1 && !topLayer.ContainsKey(tile.Key))
-                    // change navMap so only mountains are not traversable instead of any topLayer tile
                 if (tile.Value == 1 && !(topLayer.TryGetValue(tile.Key, out int value) && value == 3))
                 {
                     navMap[tile.Key] = true;
@@ -231,16 +229,31 @@ namespace cr_mono.Core.GameLogic
             }
         }
 
-        internal static void AddStructures(
+        internal static Dictionary<Vector2, Structure> AddStructures(
             Dictionary<Vector2, bool> navMap,
             Dictionary<Vector2, int> topLayer,
             RNG rng,
             int amount) 
         {
-            for (int i = 0; i < amount; i++)
+            Dictionary<Vector2, Structure> structures = [];
+            List<Vector2> usedPositions = [];
+
+            int i = 0, j = 0;
+            while (i < amount && j < amount * 2)
             {
-                topLayer[GetRandomMapPos(navMap, rng)] = 5;
+                Vector2 structurePos = GetRandomMapPos(navMap, rng);
+                if (!usedPositions.Contains(structurePos)) 
+                {
+                    topLayer[structurePos] = 5;
+                    structures[structurePos] = new Structure(i);
+                    i++;
+                }
+                // safeguard, in the event of horrible rng, this makes sure
+                // it gives up after alot of goes of it
+                j++;
             }
+
+            return structures;
         }
     }
 }

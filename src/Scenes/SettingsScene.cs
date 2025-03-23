@@ -3,11 +3,14 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace cr_mono.Scenes
 {
     internal class SettingsScene : Component
     {
+        internal event EventHandler MenuRequested;
+
         internal override void LoadContent(ContentManager content)
         {
             //
@@ -17,11 +20,7 @@ namespace cr_mono.Scenes
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D1))
             {
-                Data.CurrentScene = Data.Scenes.Menu;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.D2))
-            {
-                Data.CurrentScene = Data.Scenes.Game;
+                MenuRequested?.Invoke(this, EventArgs.Empty);
             }
             if (Keyboard.GetState().IsKeyDown(Keys.F))
             {

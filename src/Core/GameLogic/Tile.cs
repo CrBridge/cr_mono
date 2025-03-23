@@ -6,8 +6,6 @@ namespace cr_mono.Core.GameLogic
 {
     internal static class Tile
     {
-        // basic class for helper functions for now
-        // This class may also include the enum for tile types (air, solid, half, stairs etc.)
         internal static Rectangle IsometricToPixel(Vector2 itemKey, Camera camera, int layer) {
             int zoom = camera.zoomLevels[camera.zoomIndex];
             int x = (int)itemKey.X - layer;

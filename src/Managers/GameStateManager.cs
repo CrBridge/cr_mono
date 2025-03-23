@@ -13,29 +13,25 @@ namespace cr_mono.Managers
         private GameScene gs;
         private SettingsScene ss;
 
-        // idea is that I have this, so that I can load scenes after runtime, using
-        // events & delegates or some such so it looks nice
         private ContentManager content;
+
         internal event EventHandler OnNewGame;
+        internal event EventHandler OnReturnToMenu;
+        internal event EventHandler OnSettings;
 
         internal GameStateManager(ContentManager content)
         {
             this.content = content;
             ms = new MenuScene();
-            ss = new SettingsScene();
+            ms.NewGameRequested += (sender, e) => OnNewGame?.Invoke(this, EventArgs.Empty);
 
-            ms.NewGameRequested += (sender, e) => OnNewGame?.Invoke(this, EventArgs.Empty);//
             OnNewGame += HandleNewGame;
+            OnReturnToMenu += HandleReturnToMenu;
+            OnSettings += HandleGoToSettings;
         }
 
         internal override void LoadContent(ContentManager content) {
-            // with this new setup for creating the gameScene only when needed,
-            // It might be a good call to have it like that for all
-            // since this will just be loaded at all times even when not needed
-            // Its ok for now since there is so little in here, it is kinda
-            // unnessacary
             ms.LoadContent(content);
-            ss.LoadContent(content);
         }
         
         internal override void Update(GameTime gameTime) {
@@ -67,18 +63,37 @@ namespace cr_mono.Managers
             }
         }
 
-        // This will always create a new scene. This means that entering game scene
-        // from the menu scene will always start a fresh game. I could have another event
-        // for game loading, or maybe I can use EventArgs
-
-        // to clarify, once I go from the Game to menu, the game is still in memory and
-        // loaded even if it cannot be reaccessed in that state, I should have some way to
-        // unload it when I return to menu (delete keyword to delete scene, + another event?)
-        private void HandleNewGame(object sneder, EventArgs e)
+        // At some point I will want functionality to load a game as well as start new,
+        // I could handle this through another seperate event, or maybe using EventArgs
+        private void HandleNewGame(object sender, EventArgs e)
         {
+            ms = null;
+            ss = null;
             gs = new GameScene();
+            gs.MenuRequested += (sender, e) => OnReturnToMenu?.Invoke(this, EventArgs.Empty);
             gs.LoadContent(content);
             Data.CurrentScene = Data.Scenes.Game;
+        }
+
+        private void HandleReturnToMenu(object sender, EventArgs e)
+        {
+            gs = null;
+            ss = null;
+            ms = new MenuScene();
+            ms.NewGameRequested += (sender, e) => OnNewGame?.Invoke(this, EventArgs.Empty);
+            ms.SettingsRequested += (sender, e) => OnSettings?.Invoke(this, EventArgs.Empty);
+            ms.LoadContent(content);
+            Data.CurrentScene = Data.Scenes.Menu;
+        }
+
+        private void HandleGoToSettings(object sender, EventArgs e)
+        {
+            ms = null;
+            gs = null;
+            ss = new SettingsScene();
+            ss.MenuRequested += (sender, e) => OnReturnToMenu?.Invoke(this, EventArgs.Empty);
+            ss.LoadContent(content);
+            Data.CurrentScene = Data.Scenes.Settings;
         }
     }
 }

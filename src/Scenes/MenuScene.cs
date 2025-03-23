@@ -11,8 +11,10 @@ namespace cr_mono.Scenes
 {
     internal class MenuScene : Component
     {
-        private readonly List<InteractiveButton> buttons = [];
         internal event EventHandler NewGameRequested;
+        internal event EventHandler SettingsRequested;
+
+        private readonly List<InteractiveButton> buttons = [];
 
         internal override void LoadContent(ContentManager content)
         {
@@ -44,7 +46,8 @@ namespace cr_mono.Scenes
 
             if (buttons[1].Pressed(ms, scaledPos))
             {
-                Data.CurrentScene = Data.Scenes.Settings;
+                //Data.CurrentScene = Data.Scenes.Settings;
+                SettingsRequested?.Invoke(this, EventArgs.Empty);
             }
 
             if (buttons[2].Pressed(ms, scaledPos)) {

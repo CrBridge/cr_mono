@@ -48,12 +48,22 @@ namespace cr_mono.Core.GameLogic
             targetTile = path.Count > 0 ? path.Dequeue() : null;
         }
 
-        internal void UpdatePosition() 
+        internal void UpdatePosition(Dictionary<Vector2, int> topLayer) 
         {
             if (targetTile.HasValue) 
             {
                 position = targetTile.Value;
                 targetTile = path.Count > 0 ? path.Dequeue() : null;
+
+                if (topLayer.TryGetValue(position, out int value) && value == 5)
+                {
+                    // player has entered structure tile
+                    // how do I wanna play this, I could have some full on event system
+                    // that this would lead to. I could use a regular c# event probably
+                    // Full event system would be nice I imagine, eventually there will be
+                    // other kinds of structure, and maybe even random encounters
+                    // random encounters could be based on other units on the map or other kinds
+                }
             }
         }
     }
