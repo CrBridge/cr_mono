@@ -5,6 +5,10 @@ namespace cr_mono.Core.GameLogic
     internal class WorldTime
     {
         private float realTime;
+        // todo! If I'm displaying the current time on screen, 
+        // I should have that as a function in this class
+        // then GameScene can just call
+        // worldTime.RenderTime(spriteBatch)
         internal int minutes;// set to internal for debugging
         internal int hours;  // set to internal for debugging
         internal int days;   // set to internal for debugging
@@ -13,7 +17,7 @@ namespace cr_mono.Core.GameLogic
         private enum TimeSpeed { Slow, Standard, Fast }
         private TimeSpeed speed = TimeSpeed.Fast;
 
-        internal Color skyColor;
+        internal Color skyColor { get; private set; }
 
         internal WorldTime() 
         {
@@ -93,6 +97,9 @@ namespace cr_mono.Core.GameLogic
                     return 1.0f;
                 case TimeSpeed.Standard:
                     return 3.0f;
+                // should consider that ProcessTime() simply increments the values
+                // ++, so no mater how fast this is set, It will be limited to a maximum
+                // of +1 minute each frame
                 case TimeSpeed.Fast:
                     return 15.0f;
                 default:

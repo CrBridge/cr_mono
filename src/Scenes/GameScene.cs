@@ -123,20 +123,16 @@ namespace cr_mono.Scenes
                 Rectangle src = textureStore[item.Value - 1];
 
                 if (dst.Intersects(bounds)) {
-                    // TODO! only do this for the top layer. its proccing on base too and making it look strange
                     if (layerNumber != 0 && item.Key == player.position)
                     {
-                        //spritebatch.Draw(tileSetTexture, dst, src, new Color(Color.White, 0.8f));
                         spritebatch.Draw(tileSetTexture, dst, src, new Color(worldTime.skyColor, 0.8f));
                     }
                     else if (item.Key == selectedTile && camera.zoomIndex > 0)
                     {
-                        //spritebatch.Draw(tileSetTexture, dst, src, Color.Silver);
                         spritebatch.Draw(tileSetTexture, dst, src, Color.Lerp(worldTime.skyColor, Color.Silver, 0.5f));
                     }
                     else
                     {
-                        //spritebatch.Draw(tileSetTexture, dst, src, Color.White);
                         spritebatch.Draw(tileSetTexture, dst, src, worldTime.skyColor);
                     }
                     visibleTiles++;

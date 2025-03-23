@@ -27,7 +27,7 @@ namespace cr_mono.Core
 
         protected override void Initialize()
         {
-            gsm = new GameStateManager();
+            gsm = new GameStateManager(Content);
             base.Initialize();
         }
 

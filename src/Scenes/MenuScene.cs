@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using cr_mono.Core;
 using cr_mono.Core.UI;
 using Microsoft.Xna.Framework;
@@ -11,6 +12,7 @@ namespace cr_mono.Scenes
     internal class MenuScene : Component
     {
         private readonly List<InteractiveButton> buttons = [];
+        internal event EventHandler NewGameRequested;
 
         internal override void LoadContent(ContentManager content)
         {
@@ -35,7 +37,9 @@ namespace cr_mono.Scenes
                 (screenWidth / (float)Data.NativeWidth);
 
             if (buttons[0].Pressed(ms, scaledPos)) {
-                Data.CurrentScene = Data.Scenes.Game;
+                // worth noting, this event creates a new instance of GameScene when invoked
+                // menu scene doesnt simply pause the game anymore
+                NewGameRequested?.Invoke(this, EventArgs.Empty);
             }
 
             if (buttons[1].Pressed(ms, scaledPos))
