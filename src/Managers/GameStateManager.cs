@@ -37,13 +37,13 @@ namespace cr_mono.Managers
         internal override void Update(GameTime gameTime) {
             switch (Data.CurrentScene) {
                 case Data.Scenes.Menu:
-                    ms.Update(gameTime);
+                    ms?.Update(gameTime);
                     break;
                 case Data.Scenes.Game:
                     gs?.Update(gameTime);
                     break;
                 case Data.Scenes.Settings:
-                    ss.Update(gameTime);
+                    ss?.Update(gameTime);
                     break;
             }
         }
@@ -52,13 +52,13 @@ namespace cr_mono.Managers
             switch (Data.CurrentScene)
             {
                 case Data.Scenes.Menu:
-                    ms.Draw(spriteBatch);
+                    ms?.Draw(spriteBatch);
                     break;
                 case Data.Scenes.Game:
                     gs?.Draw(spriteBatch);
                     break;
                 case Data.Scenes.Settings:
-                    ss.Draw(spriteBatch);
+                    ss?.Draw(spriteBatch);
                     break;
             }
         }
