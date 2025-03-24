@@ -24,6 +24,7 @@ namespace cr_mono.Managers
             this.content = content;
             ms = new MenuScene();
             ms.NewGameRequested += (sender, e) => OnNewGame?.Invoke(this, EventArgs.Empty);
+            ms.SettingsRequested += (sender, e) => OnSettings?.Invoke(this, EventArgs.Empty);
 
             OnNewGame += HandleNewGame;
             OnReturnToMenu += HandleReturnToMenu;

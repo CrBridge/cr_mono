@@ -3,19 +3,19 @@ using Microsoft.Xna.Framework.Input;
 
 namespace cr_mono.Core.GameLogic
 {
-    public class Camera
+    internal class Camera2D
     {
-        public readonly int[] zoomLevels = [8, 16, 32, 64];
-        public int zoomIndex = 2;
+        internal readonly int[] zoomLevels = [8, 16, 32, 64];
+        internal int zoomIndex = 2;
+        
+        internal Vector2 Position;
 
-        public Vector2 Position;
-
-        public Camera() {
+        internal Camera2D() {
             this.Position = new Vector2(
                 Data.NativeWidth / 2 - (zoomLevels[zoomIndex] / 2), Data.NativeHeight / 2);
         }
 
-        public void Update(GameTime gameTime) {
+        internal void Update(GameTime gameTime) {
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
                 Position.Y += 2 * zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;

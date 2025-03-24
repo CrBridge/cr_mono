@@ -1,4 +1,5 @@
 ﻿using cr_mono.Core;
+using cr_mono.src.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,18 +21,17 @@ namespace cr_mono.Scenes
 
         private Scenes scene;
         WorldScene ws;
-
-        private void HandleReturnToMenu(object sender, EventArgs e)
-        {
-            MenuRequested?.Invoke(this, EventArgs.Empty);
-        }
+        Debug3dScene debug;
 
         internal override void LoadContent(ContentManager content)
         {
-            scene = Scenes.WorldMap;
-            ws = new WorldScene();
-            ws.MenuRequested += HandleReturnToMenu;
-            ws.LoadContent(content);
+            scene = Scenes.Debug3D;
+            //ws = new WorldScene();
+            //ws.MenuRequested += HandleReturnToMenu;
+            //ws.LoadContent(content);
+            debug = new Debug3dScene();
+            debug.MenuRequested += HandleReturnToMenu;
+            debug.LoadContent(content);
         }
 
         internal override void Update(GameTime gameTime)
@@ -46,6 +46,7 @@ namespace cr_mono.Scenes
                 case Scenes.Village:
                     break;
                 case Scenes.Debug3D:
+                    debug.Update(gameTime);
                     break;
             }
         }
@@ -62,8 +63,14 @@ namespace cr_mono.Scenes
                 case Scenes.Village:
                     break;
                 case Scenes.Debug3D:
+                    debug.Draw(spriteBatch);
                     break;
             }
+        }
+
+        private void HandleReturnToMenu(object sender, EventArgs e)
+        {
+            MenuRequested?.Invoke(this, EventArgs.Empty);
         }
     }
 }

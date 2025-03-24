@@ -28,7 +28,7 @@ namespace cr_mono.Core.GameLogic
         }
 
         internal void RenderToMap(
-            Camera camera, 
+            Camera2D camera, 
             Vector2 selectedTile, 
             SpriteBatch spriteBatch) 
         {

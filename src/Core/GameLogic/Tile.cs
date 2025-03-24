@@ -6,7 +6,7 @@ namespace cr_mono.Core.GameLogic
 {
     internal static class Tile
     {
-        internal static Rectangle IsometricToPixel(Vector2 itemKey, Camera camera, int layer) {
+        internal static Rectangle IsometricToPixel(Vector2 itemKey, Camera2D camera, int layer) {
             int zoom = camera.zoomLevels[camera.zoomIndex];
             int x = (int)itemKey.X - layer;
             int y = (int)itemKey.Y - layer;
@@ -17,7 +17,7 @@ namespace cr_mono.Core.GameLogic
                 zoom, zoom);
         }
 
-        internal static Vector2 PixelToIsometric(Vector2 mousePos, Camera camera) {
+        internal static Vector2 PixelToIsometric(Vector2 mousePos, Camera2D camera) {
             int screenWidth = Data.IsFullScreen ?
                 GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width : Data.ScreenWidth;
             mousePos = mousePos /

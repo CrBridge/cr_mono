@@ -19,7 +19,7 @@ namespace cr_mono.Scenes
         private ArmyPlayer player;
         private WorldMap world;
 
-        private Camera camera;
+        private Camera2D camera;
         private Vector2 selectedTile;
 
         private WorldTime worldTime;
@@ -33,7 +33,7 @@ namespace cr_mono.Scenes
             Data.RNG = new RNG(6);
             world = new WorldMap(50, Data.RNG);
             player = new ArmyPlayer(world.navMap, Data.RNG, unitsTexture);
-            camera = new Camera();
+            camera = new Camera2D();
 
             worldTime = new WorldTime();
             lastMoveMinute = worldTime.minutes;

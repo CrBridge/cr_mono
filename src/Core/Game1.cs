@@ -28,6 +28,7 @@ namespace cr_mono.Core
         protected override void Initialize()
         {
             gsm = new GameStateManager(Content);
+            //base.IsMouseVisible = false;
             base.Initialize();
         }
 
@@ -43,6 +44,8 @@ namespace cr_mono.Core
         {
             Data.PreviousKeyboardState = Data.CurrentKeyboardState;
             Data.CurrentKeyboardState = Keyboard.GetState();
+
+            Data.CurrentMouseState = Mouse.GetState();
 
             if (Data.Exit == true) {
                 Exit();
