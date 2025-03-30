@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace cr_mono.Core.GameLogic
 {
@@ -29,6 +30,13 @@ namespace cr_mono.Core.GameLogic
             this.years = 1;
 
             this.skyColor = Color.White;
+
+            // todo! use a list of custom colors to lerp between
+            //      in UpdateSkyColor
+            /*this.skyColors = new List<Color> 
+            {
+                new Color(1.0f, 1.0f, 1.0f)
+            };*/
         }
 
         internal void Update(GameTime gameTime) 

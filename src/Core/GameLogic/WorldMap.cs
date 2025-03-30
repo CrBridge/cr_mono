@@ -5,7 +5,7 @@ namespace cr_mono.Core.GameLogic
 {
     internal class WorldMap
     {
-        internal Dictionary<Vector2, int> baseLayer, topLayer;
+        internal Dictionary<Vector2, TileType> baseLayer, topLayer;
         internal Dictionary<Vector2, Structure> structures;
         internal Dictionary<Vector2, bool> navMap;
         internal List<Rectangle> textureStore;

@@ -8,18 +8,18 @@ namespace cr_mono.Core.GameLogic
 {
     internal static class WorldLogic
     {
-        internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) GenerateDiamondMap(
+        internal static (Dictionary<Vector2, TileType>, Dictionary<Vector2, TileType>) GenerateDiamondMap(
             int size,
             RNG rng)
         {
-            Dictionary<Vector2, int> baseLayer = [];
-            Dictionary<Vector2, int> topLayer = [];
+            Dictionary<Vector2, TileType> baseLayer = [];
+            Dictionary<Vector2, TileType> topLayer = [];
 
             for (int y = 0; y < size; y++)
             {
                 for (int x = 0; x < size; x++)
                 {
-                    baseLayer[new Vector2(x, y)] = 1;
+                    baseLayer[new Vector2(x, y)] = TileType.GRASS;
                 }
             }
 
@@ -27,36 +27,36 @@ namespace cr_mono.Core.GameLogic
             float[][] noise = Noise.GeneratePerlinNoise(rng, size, size, 5);
             foreach (var tile in baseLayer) {
                 if (noise[(int)tile.Key.X][(int)tile.Key.Y] >= 0.5) {
-                    baseLayer[tile.Key] = 2;
+                    baseLayer[tile.Key] = TileType.WATER;
                 }
                 if (noise[(int)tile.Key.X][(int)tile.Key.Y] <= 0.3)
                 {
-                    topLayer[tile.Key] = 3;
+                    topLayer[tile.Key] = TileType.MOUNTAIN;
                 }
             }
 
             return (baseLayer, topLayer);
         }
 
-        internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) GenerateJaggedMap(
+        internal static (Dictionary<Vector2, TileType>, Dictionary<Vector2, TileType>) GenerateJaggedMap(
             int size, 
             RNG rng)
         {
-            Dictionary<Vector2, int> baseLayer = new();
-            Dictionary<Vector2, int> topLayer = new();
+            Dictionary<Vector2, TileType> baseLayer = new();
+            Dictionary<Vector2, TileType> topLayer = new();
             int width = (size-2)/2, height = size;
 
             for (int x = 0; x < height; x++)
             {
                 if (x != 0)
-                    baseLayer[new Vector2(x, x)] = 1;
-                baseLayer[new Vector2(x + 1, x)] = 1;
-                baseLayer[new Vector2(x, x + 1)] = 1;
+                    baseLayer[new Vector2(x, x)] = TileType.GRASS;
+                baseLayer[new Vector2(x + 1, x)] = TileType.GRASS;
+                baseLayer[new Vector2(x, x + 1)] = TileType.GRASS;
             }
  
             for (int i = 1; i <= width; i++)
             {
-                Dictionary<Vector2, int> newTiles = [];
+                Dictionary<Vector2, TileType> newTiles = [];
             
                 foreach (var tile in baseLayer.Keys.ToList())
                 {
@@ -64,10 +64,10 @@ namespace cr_mono.Core.GameLogic
                     Vector2 rightExpansion = new(tile.X + 1, tile.Y - 1);
             
                     if (!baseLayer.ContainsKey(leftExpansion))
-                        newTiles[leftExpansion] = 1;
+                        newTiles[leftExpansion] = TileType.GRASS;
             
                     if (!baseLayer.ContainsKey(rightExpansion))
-                        newTiles[rightExpansion] = 1;
+                        newTiles[rightExpansion] = TileType.GRASS;
                 }
             
                 foreach (var newTile in newTiles)
@@ -89,16 +89,16 @@ namespace cr_mono.Core.GameLogic
 
                 if (heightNoise[noiseX][noiseY] >= 0.6)
                 {
-                    baseLayer[tile] = 2;
+                    baseLayer[tile] = TileType.WATER;
                 }
                 if (heightNoise[noiseX][noiseY] <= 0.3)
                 {
-                    topLayer[tile] = 3;
+                    topLayer[tile] = TileType.MOUNTAIN;
                 }
             }
 
-            RefineBaseLayer(baseLayer, 10, 1, 2);
-            RefineBaseLayer(baseLayer, 10, 2, 1);
+            RefineBaseLayer(baseLayer, 10, TileType.GRASS, TileType.WATER);
+            RefineBaseLayer(baseLayer, 10, TileType.WATER, TileType.GRASS);
 
             // noisemap for forest generation, lower octaves as it can look a little more random
             float[][] treeNoise = Noise.GeneratePerlinNoise(rng, noiseSize, noiseSize, 4);
@@ -107,9 +107,9 @@ namespace cr_mono.Core.GameLogic
                 int noiseX = (int)tile.X - minX;
                 int noiseY = (int)tile.Y - minY;
 
-                if (treeNoise[noiseX][noiseY] <= 0.3 && baseLayer[tile] != 2 && !topLayer.ContainsKey(tile))
+                if (treeNoise[noiseX][noiseY] <= 0.3 && baseLayer[tile] != TileType.WATER && !topLayer.ContainsKey(tile))
                 {
-                    topLayer[tile] = 4;
+                    topLayer[tile] = TileType.FOREST;
                 }
             }
 
@@ -124,13 +124,13 @@ namespace cr_mono.Core.GameLogic
         }
 
         internal static Dictionary<Vector2, bool> GenerateNavMap(
-            Dictionary<Vector2, int> baseLayer, 
-            Dictionary<Vector2, int> topLayer)
+            Dictionary<Vector2, TileType> baseLayer, 
+            Dictionary<Vector2, TileType> topLayer)
         {
             Dictionary<Vector2, bool> navMap = new();
 
             foreach (var tile in baseLayer) {
-                if (tile.Value == 1 && !(topLayer.TryGetValue(tile.Key, out int value) && value == 3))
+                if (tile.Value == TileType.GRASS && !(topLayer.TryGetValue(tile.Key, out TileType value) && value == TileType.MOUNTAIN))
                 {
                     navMap[tile.Key] = true;
                 }
@@ -157,6 +157,107 @@ namespace cr_mono.Core.GameLogic
 
         // given a position on the map, returns a list
         // of all surrounding tiles of the same value
+        internal static List<Vector2> FloodFillTiles(
+            Dictionary<Vector2, TileType> layer,
+            Vector2 startPosition,
+            HashSet<Vector2> visited)
+        {
+            TileType startValue = layer[startPosition];
+            List<Vector2> tiles = new();
+
+            if (!layer.ContainsKey(startPosition))
+            {
+                return tiles;
+            }
+
+            Queue<Vector2> queue = new();
+            queue.Enqueue(startPosition);
+            tiles.Add(startPosition);
+            visited.Add(startPosition);
+
+            Vector2[] directions = {
+                new Vector2(1, 0), new Vector2(-1, 0),
+                new Vector2(0, 1), new Vector2(0, -1)
+            };
+
+            while (queue.Count > 0)
+            {
+                Vector2 current = queue.Dequeue();
+
+                foreach (var direction in directions)
+                {
+                    Vector2 neighbor = current + direction;
+
+                    if (layer.TryGetValue(neighbor, out TileType value) && value == startValue &&
+                        !visited.Contains(neighbor))
+                    {
+                        queue.Enqueue(neighbor);
+                        visited.Add(neighbor);
+                        tiles.Add(neighbor);
+                    }
+                }
+            }
+
+            return tiles;
+        }
+
+        // function to iron out noisy sections of the base layer
+        // e.g. small, enclosed areas of land or water
+        // effectively removes small islands and lakes that would mostly cause issue
+        internal static void RefineBaseLayer(
+            Dictionary<Vector2, TileType> layer,
+            int threshold,
+            TileType target,
+            TileType replacement) 
+        {
+            HashSet<Vector2> visited = new();
+
+            foreach (var tile in layer.Keys.ToList())
+            {
+                if (!visited.Contains(tile) && layer[tile] == target)
+                {
+                    List<Vector2> floodTiles = FloodFillTiles(layer, tile, visited);
+
+                    if (floodTiles.Count < threshold)
+                    {
+                        foreach (var pos in floodTiles)
+                        {
+                            layer[pos] = replacement;
+                        }
+                    }
+                }
+            }
+        }
+
+        internal static Dictionary<Vector2, Structure> AddStructures(
+            Dictionary<Vector2, bool> navMap,
+            Dictionary<Vector2, TileType> topLayer,
+            RNG rng,
+            int amount) 
+        {
+            Dictionary<Vector2, Structure> structures = [];
+            List<Vector2> usedPositions = [];
+
+            int i = 0, j = 0;
+            while (i < amount && j < amount * 2)
+            {
+                Vector2 structurePos = GetRandomMapPos(navMap, rng);
+                if (!usedPositions.Contains(structurePos)) 
+                {
+                    topLayer[structurePos] = TileType.TOWER;
+                    structures[structurePos] = new Structure(i);
+                    usedPositions.Add(structurePos);
+                    i++;
+                }
+                // safeguard, in the event of horrible rng, this makes sure
+                // it gives up after alot of goes of it
+                j++;
+            }
+
+            return structures;
+        }
+
+        // overloaded FloodFill for use in pathfinding, since navMap still uses int values
         internal static List<Vector2> FloodFillTiles(
             Dictionary<Vector2, int> layer,
             Vector2 startPosition,
@@ -199,61 +300,6 @@ namespace cr_mono.Core.GameLogic
             }
 
             return tiles;
-        }
-
-        // function to iron out noisy sections of the base layer
-        // e.g. small, enclosed areas of land or water
-        // effectively removes small islands and lakes that would mostly cause issue
-        internal static void RefineBaseLayer(
-            Dictionary<Vector2, int> layer,
-            int threshold,
-            int target,
-            int replacement) 
-        {
-            HashSet<Vector2> visited = new();
-
-            foreach (var tile in layer.Keys.ToList())
-            {
-                if (!visited.Contains(tile) && layer[tile] == target)
-                {
-                    List<Vector2> floodTiles = FloodFillTiles(layer, tile, visited);
-
-                    if (floodTiles.Count < threshold)
-                    {
-                        foreach (var pos in floodTiles)
-                        {
-                            layer[pos] = replacement;
-                        }
-                    }
-                }
-            }
-        }
-
-        internal static Dictionary<Vector2, Structure> AddStructures(
-            Dictionary<Vector2, bool> navMap,
-            Dictionary<Vector2, int> topLayer,
-            RNG rng,
-            int amount) 
-        {
-            Dictionary<Vector2, Structure> structures = [];
-            List<Vector2> usedPositions = [];
-
-            int i = 0, j = 0;
-            while (i < amount && j < amount * 2)
-            {
-                Vector2 structurePos = GetRandomMapPos(navMap, rng);
-                if (!usedPositions.Contains(structurePos)) 
-                {
-                    topLayer[structurePos] = 5;
-                    structures[structurePos] = new Structure(i);
-                    i++;
-                }
-                // safeguard, in the event of horrible rng, this makes sure
-                // it gives up after alot of goes of it
-                j++;
-            }
-
-            return structures;
         }
     }
 }

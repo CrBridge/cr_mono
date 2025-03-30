@@ -20,8 +20,8 @@ namespace cr_mono.Core
         internal static KeyboardState PreviousKeyboardState { get; set; } = Keyboard.GetState();
         internal static KeyboardState CurrentKeyboardState { get; set; } = PreviousKeyboardState;
 
-        //TODO! update old mouse code to use this value, to avoid initialising MouseState
-        // multiple times per frame
+        //todo! have any mouse dependant code use this state value,
+        //  to avoid needlessly creating multiple mouse states a frame
         internal static MouseState CurrentMouseState { get; set; } = Mouse.GetState();
 
         public static RNG RNG { get; set; }

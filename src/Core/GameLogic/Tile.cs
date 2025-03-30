@@ -4,6 +4,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace cr_mono.Core.GameLogic
 {
+    internal enum TileType 
+    {
+        GRASS,
+        WATER,
+        MOUNTAIN,
+        FOREST,
+        TOWER
+    }
+
     internal static class Tile
     {
         internal static Rectangle IsometricToPixel(Vector2 itemKey, Camera2D camera, int layer) {
