@@ -27,6 +27,12 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/font_small.spritefont
 
+#begin Shaders/TestEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Shaders/TestEffect.fx
+
 #begin Textures/tileset.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -38,6 +44,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/tileset.png
+
+#begin Textures/tilesetLarge.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/tilesetLarge.png
 
 #begin Textures/ui.png
 /importer:TextureImporter

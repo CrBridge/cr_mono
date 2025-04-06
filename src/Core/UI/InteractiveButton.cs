@@ -57,13 +57,13 @@ namespace cr_mono.Core.UI
         {
             if (isSelected) 
             {
-                spriteBatch.Draw(texture, selectedDst, src, selectedButtonColor);
-                spriteBatch.DrawString(font, text, textPos, selectedTextColor);
+                spriteBatch.Draw(Texture, selectedDst, src, selectedButtonColor);
+                spriteBatch.DrawString(Font, text, textPos, selectedTextColor);
             }
             else 
             {
-                spriteBatch.Draw(texture, dst, src, Color.White);
-                spriteBatch.DrawString(font, text, textPos, textColor);
+                spriteBatch.Draw(Texture, dst, src, Color.White);
+                spriteBatch.DrawString(Font, text, textPos, textColor);
             }
         }
     }

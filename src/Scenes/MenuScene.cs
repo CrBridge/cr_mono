@@ -46,7 +46,6 @@ namespace cr_mono.Scenes
 
             if (buttons[1].Pressed(ms, scaledPos))
             {
-                //Data.CurrentScene = Data.Scenes.Settings;
                 SettingsRequested?.Invoke(this, EventArgs.Empty);
             }
 

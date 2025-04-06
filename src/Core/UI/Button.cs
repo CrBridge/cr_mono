@@ -8,18 +8,20 @@ namespace cr_mono.Core.UI
     internal class Button
     {
         protected Rectangle dst, src;
-        protected Texture2D texture;
+        protected static Texture2D Texture 
+        {
+            get { return ResourceManager.UI; }
+        }
 
         internal Button(Rectangle dst, Rectangle src)
         {
             this.dst = dst;
             this.src = src;
-            this.texture = ResourceManager.UI;
         }
 
         internal virtual void Draw(SpriteBatch spriteBatch) 
         {
-            spriteBatch.Draw(texture, dst, src, Color.White);
+            spriteBatch.Draw(Texture, dst, src, Color.White);
         }
     }
 }

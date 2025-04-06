@@ -229,6 +229,12 @@ namespace cr_mono.Core.GameLogic
             }
         }
 
+        // I guess I should do something like 10 towers, 10 caves, 10 settlements or something
+        //  I could just run this 3 times, adding an argument for TileType,
+        //  but if I do that, i gotta make sure It wont overwrite tiles if it picks
+        //  a tile that already contains a structure
+        //  also gotta think about other stuff. e.g. For cave tiles, should they have to be
+        //  by mountains? If a settlement spawns by the water, should I add a dock/boat tile?
         internal static Dictionary<Vector2, Structure> AddStructures(
             Dictionary<Vector2, bool> navMap,
             Dictionary<Vector2, TileType> topLayer,
