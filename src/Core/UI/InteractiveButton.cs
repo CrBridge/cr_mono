@@ -18,8 +18,9 @@ namespace cr_mono.Core.UI
             string text,
             Color textColor,
             Color selectedTextColor,
-            Color selectedBtnColor)
-            : base(dst, src, text, textColor) 
+            Color selectedBtnColor,
+            bool isSmall = true)
+            : base(dst, src, text, textColor, isSmall) 
         {
             this.selectedButtonColor = selectedBtnColor;
             this.selectedTextColor = selectedTextColor;

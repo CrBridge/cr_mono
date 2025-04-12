@@ -15,6 +15,7 @@ namespace cr_mono.Core.GameLogic
         internal bool isActive;
         private TextBlock popupInfo;
         private List<InteractiveButton> popupButtons;
+        internal int structureId;
 
         internal PopupSystem() 
         {
@@ -24,24 +25,20 @@ namespace cr_mono.Core.GameLogic
         internal void Trigger(Structure structure)
         {
             isActive = true;
+            structureId = structure.id;
             int x = (Data.NativeWidth - 192) / 2;
             int y = (Data.NativeHeight - 160) / 2;
             popupInfo = new TextBlock(new Rectangle(x, y, 192, 160), $"Structure id is {structure.id} do you enter?", 100);
-            // challenge now is how I can position the buttons. Idea for now is just positioning them from the bottom
-            //  with a constant value (will only have 2 buttons for now, so values can be pretty constant)
-            //  If there is too much text, It will be obscured by the buttons. Solutions there can be either
-            //  to make sure there isn't ever too much text, or coding scroll functionality. Thats a way off though
             popupButtons = [];
             Rectangle buttonSrc = new Rectangle(0, 0, 128, 32);
             string[] buttonTexts = ["Enter", "Leave"];
-            int buttonX = (x + (x + 192 - 128)) / 2;
-            int buttonY = (y + (y + 160 - 32)) / 2;
+            int buttonX = (x + (x + 192 - 64)) / 2;
+            int buttonY = 32 + (y + (y + 160 - 16)) / 2;
             for (int i = 0; i < buttonTexts.Length; i++) 
             {
-                //todo! Buttons are too big. I should size them down. Issue is that InteractiveButton uses
-                // the large font. So I'll have to alter interactiveButton code to support small text too
-                Rectangle dst = new Rectangle(buttonX, buttonY + (48 * i), 128, 32);
-                popupButtons.Add(new InteractiveButton(dst, buttonSrc, buttonTexts[i], Color.Black, Color.White, Color.DarkGreen));
+                Rectangle dst = new Rectangle(buttonX, buttonY + (24 * i), 64, 16);
+                popupButtons.Add(new InteractiveButton(
+                    dst, buttonSrc, buttonTexts[i], Color.Black, Color.White, Color.DarkGreen));
             }
         }
 

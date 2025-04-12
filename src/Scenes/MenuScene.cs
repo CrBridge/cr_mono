@@ -26,7 +26,7 @@ namespace cr_mono.Scenes
                 buttonsDst[i] = new Rectangle(
                     Data.NativeWidth / 2 - 64, Data.NativeHeight / 2 - 64 + (i * 48), 128, 32);
                 buttons.Add(new InteractiveButton(
-                    buttonsDst[i], buttonSrc, buttonTexts[i], Color.Black, Color.White, Color.DarkGreen));
+                    buttonsDst[i], buttonSrc, buttonTexts[i], Color.Black, Color.White, Color.DarkGreen, false));
             }
         }
 

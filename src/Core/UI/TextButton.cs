@@ -10,16 +10,18 @@ namespace cr_mono.Core.UI
         protected string text;
         protected Vector2 textPos;
         protected Color textColor;
-        protected static SpriteFont Font 
+        private bool isSmallFont;
+        protected SpriteFont Font 
         {
-            get { return ResourceManager.FontRegular; }
+            get { return isSmallFont ? ResourceManager.FontSmall : ResourceManager.FontRegular; }
         }
 
-        internal TextButton(Rectangle dst, Rectangle src, string text, Color color) 
+        internal TextButton(Rectangle dst, Rectangle src, string text, Color color, bool isSmall = true) 
             : base(dst, src) 
         {
             this.text = text;
             this.textColor = color;
+            this.isSmallFont = isSmall;
 
             Vector2 textLength = Font.MeasureString(text);
             this.textPos = new Vector2(

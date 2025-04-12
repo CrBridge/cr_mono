@@ -13,18 +13,26 @@ namespace cr_mono.Managers
         private GameScene gs;
         private SettingsScene ss;
 
-        private ContentManager content;
+        private readonly ContentManager content;
 
         internal event EventHandler OnNewGame;
         internal event EventHandler OnReturnToMenu;
         internal event EventHandler OnSettings;
 
+        private readonly EventHandler newGameHandler;
+        private readonly EventHandler settingsHandler;
+        private readonly EventHandler returnToMenuHandler;
+
         internal GameStateManager(ContentManager content)
         {
             this.content = content;
             ms = new MenuScene();
-            ms.NewGameRequested += (sender, e) => OnNewGame?.Invoke(this, EventArgs.Empty);
-            ms.SettingsRequested += (sender, e) => OnSettings?.Invoke(this, EventArgs.Empty);
+            newGameHandler = (sender, e) => OnNewGame?.Invoke(this, EventArgs.Empty);
+            settingsHandler = (sender, e) => OnSettings?.Invoke(this, EventArgs.Empty);
+            returnToMenuHandler = (sender, e) => OnReturnToMenu?.Invoke(this, EventArgs.Empty);
+
+            ms.NewGameRequested += newGameHandler;
+            ms.SettingsRequested += settingsHandler;
 
             OnNewGame += HandleNewGame;
             OnReturnToMenu += HandleReturnToMenu;
@@ -68,33 +76,61 @@ namespace cr_mono.Managers
         // I could handle this through another seperate event, or maybe using EventArgs
         private void HandleNewGame(object sender, EventArgs e)
         {
-            ms = null;
-            ss = null;
+            DecoupleMenuEvents();
+            DecoupleSettingsEvents();
             gs = new GameScene();
-            gs.MenuRequested += (sender, e) => OnReturnToMenu?.Invoke(this, EventArgs.Empty);
+            gs.MenuRequested += returnToMenuHandler;
             gs.LoadContent(content);
             Data.CurrentScene = Data.Scenes.Game;
         }
 
         private void HandleReturnToMenu(object sender, EventArgs e)
         {
-            gs = null;
-            ss = null;
+            DecoupleGameEvents();
+            DecoupleSettingsEvents();
             ms = new MenuScene();
-            ms.NewGameRequested += (sender, e) => OnNewGame?.Invoke(this, EventArgs.Empty);
-            ms.SettingsRequested += (sender, e) => OnSettings?.Invoke(this, EventArgs.Empty);
+            ms.NewGameRequested += newGameHandler;
+            ms.SettingsRequested += settingsHandler;
             ms.LoadContent(content);
             Data.CurrentScene = Data.Scenes.Menu;
         }
 
         private void HandleGoToSettings(object sender, EventArgs e)
         {
-            ms = null;
-            gs = null;
+            DecoupleMenuEvents();
+            DecoupleGameEvents();
             ss = new SettingsScene();
-            ss.MenuRequested += (sender, e) => OnReturnToMenu?.Invoke(this, EventArgs.Empty);
+            ss.MenuRequested += returnToMenuHandler;
             ss.LoadContent(content);
             Data.CurrentScene = Data.Scenes.Settings;
+        }
+
+        private void DecoupleMenuEvents() 
+        {
+            if (ms != null)
+            {
+                ms.NewGameRequested -= newGameHandler;
+                ms.SettingsRequested -= settingsHandler;
+                ms = null;
+            }
+        }
+
+        private void DecoupleSettingsEvents() 
+        {
+            if (ss != null)
+            {
+                ss.MenuRequested -= returnToMenuHandler;
+                ss = null;
+            }
+        }
+
+        private void DecoupleGameEvents() 
+        {
+            if (gs != null)
+            {
+                gs.MenuRequested -= returnToMenuHandler;
+                gs = null;
+            }
         }
     }
 }
