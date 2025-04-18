@@ -101,7 +101,7 @@ namespace cr_mono.Scenes
                 int timeDifference = (worldTime.minutes - lastMoveMinute + 60) % 60;
                 if (timeDifference >= 5)
                 {
-                    player.UpdatePosition(world.topLayer);
+                    player.UpdatePosition(world.layers[1]);
                     lastMoveMinute = worldTime.minutes;
                 }
             }
@@ -109,9 +109,9 @@ namespace cr_mono.Scenes
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            RenderLayer(spriteBatch, world.baseLayer, 0);
+            RenderLayer(spriteBatch, world.layers[0], 0);
             player.RenderToMap(camera, selectedTile, spriteBatch);
-            RenderLayer(spriteBatch, world.topLayer, 1);
+            RenderLayer(spriteBatch, world.layers[1], 1);
 
             //todo! I dont like how the text constantly changes length due to spacing
             // either refactor to use 3 different DrawStrings, or format it so
@@ -173,7 +173,7 @@ namespace cr_mono.Scenes
         {
             int playerTile = 0;
 
-            if (world.topLayer.TryGetValue(player.position, out int value))
+            if (world.layers[1].TryGetValue(player.position, out int value))
             {
                 playerTile = value;
             }

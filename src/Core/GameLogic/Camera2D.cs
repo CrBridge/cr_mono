@@ -18,14 +18,14 @@ namespace cr_mono.Core.GameLogic
         internal void Update(GameTime gameTime) {
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                Position.Y += 2 * zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.Y += 1 * zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.A)) {
                 Position.X += 2 * zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                Position.Y -= 2 * zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position.Y -= 1 * zoomLevels[zoomIndex] * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {

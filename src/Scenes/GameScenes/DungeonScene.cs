@@ -19,7 +19,7 @@ namespace cr_mono.src.Scenes.GameScenes
         private GameSubSceneManager manager;
 
         private Texture2D dungeonTileSet;
-        private Dictionary<Vector2, int> layer;
+        private List<Dictionary<Vector2, int>> layers;
         private List<Rectangle> textureStore;
         private Camera2D camera;
 
@@ -28,11 +28,10 @@ namespace cr_mono.src.Scenes.GameScenes
             this.context = context;
             this.manager = manager;
 
-            // generate a small grid and get testing
-            //layer = ProcGenHelpers.GenerateGrid(10);
-            layer = DungeonGen.RandomWalk(Data.RNG, new Vector2(0, 0), 500);
+            layers = DungeonGen.CreateWalledDungeon(Data.RNG, Vector2.Zero, 15, 40);
             camera = new Camera2D();
             textureStore = [
+                new Rectangle(0, 0, 64, 64),
                 new Rectangle(64, 0, 64, 64)
             ];
         }
@@ -50,18 +49,29 @@ namespace cr_mono.src.Scenes.GameScenes
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (var item in layer)
+            for (int i = 0; i < layers.Count; i++)
             {
-                Rectangle dst = Tile.IsometricToPixel(item.Key, camera, 0);
-                Rectangle src = textureStore[item.Value];
-
-                spriteBatch.Draw(dungeonTileSet, dst, src, Color.White);
+                RenderLayer(spriteBatch, layers[i], i);
             }
         }
 
         public void Dispose()
         {
             //throw new NotImplementedException();
+        }
+
+        private void RenderLayer(
+            SpriteBatch spriteBatch,
+            Dictionary<Vector2, int> layer,
+            int layerNumber) 
+        {
+            foreach (var item in layer) 
+            {
+                Rectangle dst = Tile.IsometricToPixel(item.Key, camera, layerNumber);
+                Rectangle src = textureStore[item.Value];
+
+                spriteBatch.Draw(dungeonTileSet, dst, src, Color.White);
+            }
         }
     }
 }

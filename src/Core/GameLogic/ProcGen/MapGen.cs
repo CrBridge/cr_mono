@@ -8,7 +8,7 @@ namespace cr_mono.Core.GameLogic
 {
     internal static class MapGen
     {
-        internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) GenerateDiamondMap(
+        internal static List<Dictionary<Vector2, int>> GenerateDiamondMap(
             int size,
             RNG rng)
         {
@@ -35,10 +35,10 @@ namespace cr_mono.Core.GameLogic
                 }
             }
 
-            return (baseLayer, topLayer);
+            return new List<Dictionary<Vector2, int>> { baseLayer, topLayer };
         }
 
-        internal static (Dictionary<Vector2, int>, Dictionary<Vector2, int>) GenerateJaggedMap(
+        internal static List<Dictionary<Vector2, int>> GenerateJaggedMap(
             int size, 
             RNG rng)
         {
@@ -120,7 +120,7 @@ namespace cr_mono.Core.GameLogic
                                 .ThenBy(pair => pair.Key.X)
                                 .ToDictionary();
 
-            return (sortedBase, sortedTop);
+            return new List<Dictionary<Vector2, int>> { sortedBase, sortedTop };
         }
 
         internal static Dictionary<Vector2, bool> GenerateNavMap(
@@ -262,50 +262,5 @@ namespace cr_mono.Core.GameLogic
 
             return structures;
         }
-
-        // overloaded FloodFill for use in pathfinding, since navMap still uses int values
-        /*internal static List<Vector2> FloodFillTiles(
-            Dictionary<Vector2, int> layer,
-            Vector2 startPosition,
-            HashSet<Vector2> visited)
-        {
-            int startValue = layer[startPosition];
-            List<Vector2> tiles = new();
-
-            if (!layer.ContainsKey(startPosition))
-            {
-                return tiles;
-            }
-
-            Queue<Vector2> queue = new();
-            queue.Enqueue(startPosition);
-            tiles.Add(startPosition);
-            visited.Add(startPosition);
-
-            Vector2[] directions = {
-                new Vector2(1, 0), new Vector2(-1, 0),
-                new Vector2(0, 1), new Vector2(0, -1)
-            };
-
-            while (queue.Count > 0)
-            {
-                Vector2 current = queue.Dequeue();
-
-                foreach (var direction in directions)
-                {
-                    Vector2 neighbor = current + direction;
-
-                    if (layer.TryGetValue(neighbor, out int value) && value == startValue &&
-                        !visited.Contains(neighbor))
-                    {
-                        queue.Enqueue(neighbor);
-                        visited.Add(neighbor);
-                        tiles.Add(neighbor);
-                    }
-                }
-            }
-
-            return tiles;
-        }*/
     }
 }
