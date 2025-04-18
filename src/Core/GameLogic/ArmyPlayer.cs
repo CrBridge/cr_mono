@@ -23,7 +23,7 @@ namespace cr_mono.Core.GameLogic
         {
             this.texture = texture;
             this.textureSrc = new Rectangle(0, 0, 32, 32);
-            this.position = WorldLogic.GetRandomMapPos(navMap, rng);
+            this.position = MapGen.GetRandomMapPos(navMap, rng);
 
             this.path = new Queue<Vector2>();
             this.targetTile = null;
@@ -50,7 +50,7 @@ namespace cr_mono.Core.GameLogic
             targetTile = path.Count > 0 ? path.Dequeue() : null;
         }
 
-        internal void UpdatePosition(Dictionary<Vector2, TileType> topLayer) 
+        internal void UpdatePosition(Dictionary<Vector2, int> topLayer) 
         {
             if (targetTile.HasValue) 
             {

@@ -41,7 +41,8 @@ namespace cr_mono.Scenes
 
         public void LoadContent(ContentManager content)
         {
-            tileSetTexture = content.Load<Texture2D>("Textures/tileset");
+            //tileSetTexture = content.Load<Texture2D>("Textures/tileset");
+            tileSetTexture = content.Load<Texture2D>("Textures/tilesetLarge");
             unitsTexture = content.Load<Texture2D>("Textures/units");
 
             Data.RNG = new RNG(6);
@@ -127,9 +128,15 @@ namespace cr_mono.Scenes
             }
         }
 
+        //todo! move this out of the mapScene so It can be reused across scenes
+        //  uses alot of class members right now, but some can probably go in GameContext
+        //  eventually. Each isometric scene could also hold a class of scene specific info,
+        //  such as the camera and textureStore
+        //  although this function uses worldTime to change color, which wouldnt be used
+        //  elsewhere, gotta think about that
         private void RenderLayer(
         SpriteBatch spritebatch,
-        Dictionary<Vector2, TileType> layer,
+        Dictionary<Vector2, int> layer,
         int layerNumber)
         {
             Rectangle bounds = new Rectangle(0, 0, Data.NativeWidth, Data.NativeHeight);
@@ -137,7 +144,7 @@ namespace cr_mono.Scenes
             foreach (var item in layer)
             {
                 Rectangle dst = Tile.IsometricToPixel(item.Key, camera, layerNumber);
-                Rectangle src = world.textureStore[(int)item.Value];
+                Rectangle src = world.textureStore[item.Value];
 
                 if (dst.Intersects(bounds))
                 {
@@ -164,14 +171,14 @@ namespace cr_mono.Scenes
 
         private void OnPlayerMovedTile(object sender, EventArgs e)
         {
-            TileType playerTile = TileType.GRASS;
+            int playerTile = 0;
 
-            if (world.topLayer.TryGetValue(player.position, out TileType value))
+            if (world.topLayer.TryGetValue(player.position, out int value))
             {
                 playerTile = value;
             }
 
-            if (value != TileType.GRASS && value != TileType.FOREST)
+            if (value != 0 && value != 3)
             {
                 // value is structure, trigger popup
                 popupSystem.Trigger(world.structures[player.position]);

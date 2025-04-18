@@ -48,7 +48,7 @@ namespace cr_mono.Core.GameLogic
             Vector2 end, 
             Dictionary<Vector2, bool> navMap) 
         {
-            var accessibleTiles = WorldLogic.FloodFillTiles(
+            var accessibleTiles = MapGen.FloodFillTiles(
                 navMap.ToDictionary(kvp => kvp.Key, kvp => kvp.Value ? 1 : 0),
                 start,
                 new HashSet<Vector2>());
@@ -116,13 +116,7 @@ namespace cr_mono.Core.GameLogic
             Dictionary<Vector2, bool> navMap) 
         {
             var neighbors = new List<Node>();
-            var directions = new List<Vector2>
-            {
-                new Vector2(1, 0),
-                new Vector2(-1, 0),
-                new Vector2(0, 1),
-                new Vector2(0, -1)
-            };
+            var directions = ProcGenHelpers.GetCardinalDirections();
 
             foreach (var direction in directions) 
             {

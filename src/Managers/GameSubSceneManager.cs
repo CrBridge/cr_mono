@@ -44,6 +44,7 @@ namespace cr_mono.Managers
             newScene.LoadContent(content);
         }
 
+        // todo! want this to have access to contentmanager so I can unload assets
         public void Dispose() => currentScene.Dispose();
     }
 }
